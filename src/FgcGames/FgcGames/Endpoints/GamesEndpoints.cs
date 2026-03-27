@@ -1,4 +1,6 @@
 ﻿using FgcGames.Domain.Entities;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FgcGames.Api.Endpoints
 {
@@ -6,9 +8,11 @@ namespace FgcGames.Api.Endpoints
     {
         public static void MapGamesEndpoints(this WebApplication app)
         {
-            app.MapGet("/games", async (FgcGamesContext db) => db.Games.ToList());
+            app.MapGet("/games", async ([FromServices] FgcGamesContext db) =>
+                await db.Games.ToListAsync()
+            );
 
-            app.MapPost("/games", async (Games book, FgcGamesContext db) =>
+            app.MapPost("/games", async (Games book, [FromServices] FgcGamesContext db) =>
             {
                 db.Games.Add(book);
                 await db.SaveChangesAsync();
