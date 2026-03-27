@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.4.11620.152 stable
+VisualStudioVersion = 18.4.11620.152
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1 - Api", "1 - Api", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
@@ -13,7 +13,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4 - Infra", "4 - Infra", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5 - Tests", "5 - Tests", "{E75FFB00-397E-40BC-91D4-8EB10AAC8759}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FgcGames", "FgcGames\FgcGames.csproj", "{62A94040-4833-4186-939F-463016AA27FB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FgcGames.Api", "FgcGames\FgcGames.Api.csproj", "{62A94040-4833-4186-939F-463016AA27FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FgcGames.Application", "FgcGames.Application\FgcGames.Application.csproj", "{FEA8238A-A71C-4093-8719-4C6B7B083336}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FgcGames.Infra", "FgcGames.Infra\FgcGames.Infra.csproj", "{FCAF0F39-0D71-46A6-8CA9-40650C06A79F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FgcGames.Tests", "FgcGames.Tests\FgcGames.Tests.csproj", "{E19D55CC-3D33-4078-807A-0F2985128599}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FgcGames.Domain", "FgcGames.Domain\FgcGames.Domain.csproj", "{DAFC22BD-078C-445A-B459-61D747526EA8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,12 +33,32 @@ Global
 		{62A94040-4833-4186-939F-463016AA27FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62A94040-4833-4186-939F-463016AA27FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62A94040-4833-4186-939F-463016AA27FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEA8238A-A71C-4093-8719-4C6B7B083336}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEA8238A-A71C-4093-8719-4C6B7B083336}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEA8238A-A71C-4093-8719-4C6B7B083336}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEA8238A-A71C-4093-8719-4C6B7B083336}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCAF0F39-0D71-46A6-8CA9-40650C06A79F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCAF0F39-0D71-46A6-8CA9-40650C06A79F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCAF0F39-0D71-46A6-8CA9-40650C06A79F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCAF0F39-0D71-46A6-8CA9-40650C06A79F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E19D55CC-3D33-4078-807A-0F2985128599}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E19D55CC-3D33-4078-807A-0F2985128599}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E19D55CC-3D33-4078-807A-0F2985128599}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E19D55CC-3D33-4078-807A-0F2985128599}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAFC22BD-078C-445A-B459-61D747526EA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAFC22BD-078C-445A-B459-61D747526EA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAFC22BD-078C-445A-B459-61D747526EA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAFC22BD-078C-445A-B459-61D747526EA8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{62A94040-4833-4186-939F-463016AA27FB} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{FEA8238A-A71C-4093-8719-4C6B7B083336} = {2CC8A047-9004-47D1-A6E8-33A563155586}
+		{FCAF0F39-0D71-46A6-8CA9-40650C06A79F} = {98ABB32D-B4E9-494C-AA1F-19E51E48E325}
+		{E19D55CC-3D33-4078-807A-0F2985128599} = {E75FFB00-397E-40BC-91D4-8EB10AAC8759}
+		{DAFC22BD-078C-445A-B459-61D747526EA8} = {6B5A2EB6-7B98-4C93-8536-4D3C21C182FA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6E67599C-1829-4D5F-BA87-44F42335EA42}
