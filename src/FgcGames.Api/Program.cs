@@ -1,36 +1,24 @@
-using FgcGames.Api.Endpoints;
+﻿using FgcGames.Api.Extensions;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Error()
-    .WriteTo.Console()
-    .CreateLogger();
+builder.AddServiceDefaults();
 
-builder.Host.UseSerilog();
+builder.Host.UseSerilog((context, services, configuration) =>
+{
+    configuration
+        .ReadFrom.Configuration(context.Configuration)
+        .ReadFrom.Services(services)
+        .Enrich.FromLogContext()
+        .WriteTo.OpenTelemetry();
+});
 
-builder.Services.AddControllers();
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.ConfigureServices(builder.Configuration);
 
 var app = builder.Build();
 
-app.UseSwagger();
-
-app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
-    c.RoutePrefix = "";
-});
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.MapGamesEndpoints();
+app.MapDefaultEndpoints();
+app.Configure();
 
 app.Run();

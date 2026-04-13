@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace FgcGames.Domain.Entities;
 
-namespace FgcGames.Domain.Entities
+public class Games
 {
-    public class Games
+    public Games(int id)
     {
-        public Games(int id)
-        {
-            Id = id;
-        }
-
-        public int Id { get; set; }
+        Id = id;
     }
+
+    public int Id { get; set; }
 }
