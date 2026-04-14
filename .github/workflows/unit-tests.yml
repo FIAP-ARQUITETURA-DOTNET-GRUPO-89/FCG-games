@@ -3,11 +3,6 @@ name: 🧪 Unit Tests
 on:
   pull_request:
 
-  push:
-    branches-ignore:
-      - main
-      - develop
-
 jobs:
   test:
     runs-on: ubuntu-latest
