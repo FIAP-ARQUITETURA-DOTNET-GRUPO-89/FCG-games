@@ -25,4 +25,4 @@ jobs:
         run: dotnet restore --verbosity minimal
 
       - name: 🧪 Rodar testes unitários
-        run: dotnet test tests/FgcGames.UnitTests/FgcGames.UnitTests.csproj --no-build --verbosity normal
+        run: dotnet test tests/FgcGames.UnitTests/FgcGames.UnitTests.csproj --verbosity normal
