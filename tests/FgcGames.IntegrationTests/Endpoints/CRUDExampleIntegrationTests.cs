@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using FgcGames.Application.Responses;
+using FgcGames.IntegrationTests.Fixtures;
 using FgcGames.IntegrationTests.TestHelpers;
 using Shouldly;
 

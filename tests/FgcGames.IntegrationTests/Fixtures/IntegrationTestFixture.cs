@@ -1,7 +1,7 @@
 ﻿using Aspire.Hosting;
 using Aspire.Hosting.Testing;
 
-namespace FgcGames.IntegrationTests.TestHelpers;
+namespace FgcGames.IntegrationTests.Fixtures;
 
 public class IntegrationTestFixture : IAsyncLifetime
 {
@@ -10,6 +10,8 @@ public class IntegrationTestFixture : IAsyncLifetime
 
     public async ValueTask InitializeAsync()
     {
+        Environment.SetEnvironmentVariable("DOTNET_ENVIRONMENT", "Testing");
+
         var builder = await DistributedApplicationTestingBuilder
             .CreateAsync<Projects.FgcGames_AppHost>();
 
