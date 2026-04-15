@@ -11,8 +11,7 @@ public static class CRUDExampleEndPoints
 {
     public static void MapCRUDExampleEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/crud-example")
-                       .WithTags("CRUD Example");
+        var group = app.MapGroup("/crud-example").WithTags("CRUD Example");
 
         var taskGroup = group.MapGroup("/task-items");
 
