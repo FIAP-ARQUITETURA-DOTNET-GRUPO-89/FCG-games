@@ -35,7 +35,6 @@ public static class AppConfigureExtensions
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.MapGamesEndpoints();
         app.MapCRUDExampleEndpoints();
     }
 }
