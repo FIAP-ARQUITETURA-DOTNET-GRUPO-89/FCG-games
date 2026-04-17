@@ -20,9 +20,10 @@ A **FIAP Cloud Games** é uma plataforma para venda de jogos digitais e gestão 
 
 Para entender as decisões técnicas e o fluxo do projeto, explore a pasta [`/docs`](./docs):
 
-- 📜 **[ADRs](./docs/adrs):** Registros de decisões de arquitetura.
 - 📊 **[Diagramas](./docs/diagrams):** Event Storming e Domain Storytelling.
+- 🧠 **[Linguagem ubíqua](./docs/linguagem-ubiqua):** Linguagem ubíqua e conceitos do domínio
 - 🎨 **[Miro Board](https://miro.com/app/board/uXjVGuph9Sk=/?share_link_id=200277775380):** Board interativo com a dinâmica de Event Storming.
+- 📜 **[ADRs](./docs/adrs):** Registros de decisões de arquitetura.
 - 🚀 **[Postman](./docs/api-collection):** Coleção de endpoints e ambientes para testes.
 
 ## 🛠️ Requisitos Mínimos
