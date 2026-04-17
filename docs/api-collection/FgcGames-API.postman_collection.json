@@ -1,0 +1,22 @@
+{
+  "info": {
+    "_postman_id": "94d5e0e7-0fe0-4928-9586-27798c43eeec",
+    "name": "FgcGames-API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "16325510"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": []
+    },
+    {
+      "name": "Jogo",
+      "item": []
+    },
+    {
+      "name": "Usuario",
+      "item": []
+    }
+  ]
+}
