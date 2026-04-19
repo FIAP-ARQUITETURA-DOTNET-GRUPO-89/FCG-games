@@ -14,6 +14,11 @@ public class Usuario : Entity, IAggregateRoot
     public UserRole Role { get; private set; }
     public bool Inativo { get; private set; }
 
+    protected Usuario() 
+    {
+
+    }
+
     public Usuario(string nome, DateTime dataNascimento, Email email, Senha senha, UserRole userRole)
     {
         DataCriacao = DateTime.UtcNow;

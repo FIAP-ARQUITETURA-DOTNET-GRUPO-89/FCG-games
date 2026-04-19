@@ -2,7 +2,13 @@
 
 public record Email(string Endereco)
 {
-    public static Email Create(string endereco) =>
-        // colocar aqui regra
-        new(endereco);
+    protected Email() : this(string.Empty) { }
+
+    public static Email Create(string endereco)
+    {
+        if (string.IsNullOrWhiteSpace(endereco) || !endereco.Contains("@"))
+            throw new ArgumentException("E-mail inválido.");
+
+        return new Email(endereco.ToLower().Trim());
+    }
 }
