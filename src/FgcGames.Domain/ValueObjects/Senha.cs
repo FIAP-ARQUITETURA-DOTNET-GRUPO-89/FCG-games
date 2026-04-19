@@ -2,7 +2,13 @@
 
 public record Senha(string Password)
 {
-    public static Senha Create(string senha) =>
-        //regras pra senha
-        new(senha);
+    protected Senha() : this(string.Empty) { }
+
+    public static Senha Create(string senha)
+    {
+        if (string.IsNullOrWhiteSpace(senha) || senha.Length < 8)
+            throw new ArgumentException("A senha deve ter pelo menos 8 caracteres.");
+
+        return new Senha(senha);
+    }
 }
