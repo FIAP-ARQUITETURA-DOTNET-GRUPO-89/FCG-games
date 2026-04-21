@@ -28,7 +28,7 @@ namespace FgcGames.Infra.Migrations
                     Nome = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
                     DataNascimento = table.Column<DateTime>(type: "date", nullable: false),
                     Email = table.Column<string>(type: "character varying(254)", maxLength: 254, nullable: false),
-                    Senha = table.Column<string>(type: "character varying(8)", maxLength: 8, nullable: false),
+                    Senha = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: false),
                     Role = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                     Inativo = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false)
                 },

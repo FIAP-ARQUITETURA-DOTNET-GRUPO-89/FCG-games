@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FgcGames.Infra.Migrations
 {
     [DbContext(typeof(FgcGamesContext))]
-    [Migration("20260419011851_Add-Usuarios")]
+    [Migration("20260421000353_Add-Usuarios")]
     partial class AddUsuarios
     {
         /// <inheritdoc />
@@ -111,8 +111,8 @@ namespace FgcGames.Infra.Migrations
 
                             b1.Property<string>("Password")
                                 .IsRequired()
-                                .HasMaxLength(8)
-                                .HasColumnType("character varying(8)")
+                                .HasMaxLength(60)
+                                .HasColumnType("character varying(60)")
                                 .HasColumnName("Senha");
 
                             b1.HasKey("UsuarioId");
