@@ -2,7 +2,7 @@
 
 namespace FgcGames.Domain.Interfaces.Repositories;
 
-public interface IUsuarioRepository
+public interface IUsuarioRepository : IBaseRepository<Usuario>
 {
     /// <summary>
     /// Obtém um usuário a partir do e-mail informado.
