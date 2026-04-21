@@ -2,7 +2,6 @@
 using FgcGames.Application.Commands;
 using FgcGames.Application.Interfaces;
 using FgcGames.Application.Responses;
-using FgcGames.Application.Validators;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FgcGames.Api.Endpoints;
@@ -14,7 +13,7 @@ public static class AuthEndpoints
         var group = app.MapGroup("/auth").WithTags("Auth");
 
         group.MapPost("/", Login)
-            .AddEndpointFilter<ValidationFilter<LoginValidator>>()
+            .AddEndpointFilter<ValidationFilter<LoginCommand>>()
             .WithSummary("Realiza a autenticação do usuário")
             .WithDescription("Autentica um usuário com base nas credenciais fornecidas e retorna um token de acesso.")
             .Produces<LoginResponse>(StatusCodes.Status200OK)
