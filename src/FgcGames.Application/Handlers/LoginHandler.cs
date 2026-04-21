@@ -10,7 +10,7 @@ public class LoginHandler(ILogger<LoginHandler> logger, IUsuarioRepository repos
 {
     private readonly ILogger<LoginHandler> _logger = logger;
     private readonly IUsuarioRepository _repository = repository;
-    private readonly ITokenService _tokenService;
+    private readonly ITokenService _tokenService = tokenService;
 
     public async Task<LoginResponse> Handle(LoginCommand command)
     {
