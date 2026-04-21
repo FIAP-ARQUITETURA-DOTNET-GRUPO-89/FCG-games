@@ -39,7 +39,7 @@ public class UsuarioEntityConfiguration : IEntityTypeConfiguration<Usuario>
         {
             senha.Property(s => s.Password)
                  .HasColumnName("Senha")
-                 .HasMaxLength(8)
+                 .HasMaxLength(60)
                  .IsRequired();
         });
                

@@ -108,8 +108,8 @@ namespace FgcGames.Infra.Migrations
 
                             b1.Property<string>("Password")
                                 .IsRequired()
-                                .HasMaxLength(8)
-                                .HasColumnType("character varying(8)")
+                                .HasMaxLength(60)
+                                .HasColumnType("character varying(60)")
                                 .HasColumnName("Senha");
 
                             b1.HasKey("UsuarioId");
