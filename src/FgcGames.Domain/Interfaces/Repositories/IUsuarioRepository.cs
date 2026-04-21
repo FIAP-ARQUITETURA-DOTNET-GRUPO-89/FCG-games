@@ -1,5 +1,8 @@
-﻿namespace FgcGames.Domain.Interfaces.Repositories;
+﻿using FgcGames.Domain.Entities;
 
-public interface IUsuarioRepository
+namespace FgcGames.Domain.Interfaces.Repositories;
+
+public interface IUsuarioRepository : IBaseRepository<Usuario>
 {
+    Task<bool> ExistsByEmailAsync(string email);
 }
