@@ -1,8 +1,10 @@
 ﻿using FgcGames.Application.Handlers;
+using FgcGames.Application.Interfaces;
 using FgcGames.Application.Validators;
 using FgcGames.Domain.Interfaces.Repositories;
 using FgcGames.Infra.Database;
 using FgcGames.Infra.Repositories;
+using FgcGames.Infra.Services;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -24,7 +26,14 @@ public static class AppServiceCollectionExtensions
         services.AddScoped<IUpdateTaskItemExampleHandler, UpdateTaskItemExampleHandler>();
         services.AddScoped<IDeleteTaskItemExampleHandler, DeleteTaskItemExampleHandler>();
 
+        services.AddScoped<ILoginHandler, LoginHandler>();
+
         // Repositories
         services.AddScoped<ITaskItemExampleRepository, TaskItemExampleRepository>();
+
+        services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+
+        // Services
+        services.AddScoped<ITokenService, TokenService>();
     }
 }
