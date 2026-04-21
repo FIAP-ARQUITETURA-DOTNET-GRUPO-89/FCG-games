@@ -22,7 +22,8 @@ public static class CRUDExampleEndPoints
             .Produces<CreateTaskItemExampleResponse>(StatusCodes.Status201Created)
             .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status409Conflict)
-            .Produces(StatusCodes.Status500InternalServerError);
+            .Produces(StatusCodes.Status500InternalServerError)
+            .RequireAuthorization("Admin");
 
         taskGroup.MapGet("/{id:int}", GetTaskById)
             .AddEndpointFilter<ValidationFilter<GetTaskItemByIdExampleQuery>>()
@@ -31,7 +32,8 @@ public static class CRUDExampleEndPoints
             .Produces<GetTaskItemByIdExampleResponse>(StatusCodes.Status200OK)
             .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status500InternalServerError);
+            .Produces(StatusCodes.Status500InternalServerError)
+            .RequireAuthorization("User");
 
         taskGroup.MapPut("/{id:int}", UpdateTask)
             .AddEndpointFilter<ValidationFilter<UpdateTaskItemExampleCommand>>()

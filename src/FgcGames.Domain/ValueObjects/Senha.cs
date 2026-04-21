@@ -1,14 +1,20 @@
 ﻿namespace FgcGames.Domain.ValueObjects;
 
-public record Senha(string Password)
+public record Senha
 {
-    protected Senha() : this(string.Empty) { }
+    public string Hash { get; }
 
-    public static Senha Create(string senha)
+    //protected Senha() : this(string.Empty) { }
+
+    private Senha(string hash) 
     {
-        if (string.IsNullOrWhiteSpace(senha) || senha.Length < 8)
-            throw new ArgumentException("A senha deve ter pelo menos 8 caracteres.");
+        if (string.IsNullOrWhiteSpace(hash))
+        {
+            throw new ArgumentException("O hash da senha não pode ser vazio.");
+        }
 
-        return new Senha(senha);
+        Hash = hash;
     }
+
+    public static Senha FromHash(string hash) => new(hash);
 }

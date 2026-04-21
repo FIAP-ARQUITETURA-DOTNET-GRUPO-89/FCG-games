@@ -39,6 +39,31 @@ public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddlewa
 
             await WriteProblemDetails(context, statusCode, ex.Message);
         }
+        catch (UnauthorizedAccessException ex)
+        {
+            var path = context.Request.Path;
+            var method = context.Request.Method;
+            var user = context.User?.Identity?.Name ?? "anonymous";
+
+            _logger.LogWarning(ex, "Acesso não autorizado. User: {User} | {Method} {Path}", user, method, path);
+
+            var statusCode = context.User?.Identity?.IsAuthenticated == true
+                ? StatusCodes.Status403Forbidden   
+                : StatusCodes.Status401Unauthorized; 
+
+            if (statusCode == StatusCodes.Status401Unauthorized)
+            {
+                context.Response.Headers.WWWAuthenticate = "Bearer";
+            }
+
+            await WriteProblemDetails(
+                context,
+                statusCode,
+                statusCode == 401
+                    ? "Não autenticado. Faça login para acessar este recurso."
+                    : "Você não tem permissão para acessar este recurso."
+            );
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro inesperado na requisição {Method} {Path}", context.Request.Method, context.Request.Path);
@@ -76,6 +101,8 @@ public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddlewa
     private static string GetTitle(int statusCode) => statusCode switch
     {
         StatusCodes.Status400BadRequest => "Bad Request",
+        StatusCodes.Status401Unauthorized => "Unauthorized",
+        StatusCodes.Status403Forbidden => "Forbidden",
         StatusCodes.Status404NotFound => "Not Found",
         StatusCodes.Status409Conflict => "Conflict",
         StatusCodes.Status500InternalServerError => "Internal Server Error",
