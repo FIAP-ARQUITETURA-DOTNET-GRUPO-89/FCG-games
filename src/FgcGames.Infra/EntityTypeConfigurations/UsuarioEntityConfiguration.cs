@@ -37,7 +37,7 @@ public class UsuarioEntityConfiguration : IEntityTypeConfiguration<Usuario>
 
         builder.OwnsOne(x => x.Senha, senha =>
         {
-            senha.Property(s => s.Password)
+            senha.Property(s => s.Hash)
                  .HasColumnName("Senha")
                  .HasMaxLength(60)
                  .IsRequired();
