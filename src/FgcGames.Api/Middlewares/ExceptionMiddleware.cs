@@ -41,28 +41,9 @@ public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddlewa
         }
         catch (UnauthorizedAccessException ex)
         {
-            var path = context.Request.Path;
-            var method = context.Request.Method;
-            var user = context.User?.Identity?.Name ?? "anonymous";
+            _logger.LogWarning(ex, "Falha na validação de acesso em {Method} {Path} | Motivo: {Message}", context.Request.Method, context.Request.Path, ex.Message);
 
-            _logger.LogWarning(ex, "Acesso não autorizado. User: {User} | {Method} {Path}", user, method, path);
-
-            var statusCode = context.User?.Identity?.IsAuthenticated == true
-                ? StatusCodes.Status403Forbidden   
-                : StatusCodes.Status401Unauthorized; 
-
-            if (statusCode == StatusCodes.Status401Unauthorized)
-            {
-                context.Response.Headers.WWWAuthenticate = "Bearer";
-            }
-
-            await WriteProblemDetails(
-                context,
-                statusCode,
-                statusCode == 401
-                    ? "Não autenticado. Faça login para acessar este recurso."
-                    : "Você não tem permissão para acessar este recurso."
-            );
+            await WriteProblemDetails(context, StatusCodes.Status401Unauthorized, ex.Message);
         }
         catch (Exception ex)
         {
