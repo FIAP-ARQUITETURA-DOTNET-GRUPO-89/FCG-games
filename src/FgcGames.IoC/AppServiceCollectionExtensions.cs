@@ -5,6 +5,7 @@ using FgcGames.Domain.Interfaces.Repositories;
 using FgcGames.Infra.Database;
 using FgcGames.Infra.Repositories;
 using FgcGames.Infra.Services;
+using FgcGames.Shared.Settings;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -16,6 +17,10 @@ public static class AppServiceCollectionExtensions
 {
     public static void ConfigureAppDependencies(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddOptions<JwtSettings>().Bind(configuration.GetSection("JwtSettings"))
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
+
         services.AddValidatorsFromAssemblyContaining<IValidators>();
 
         services.AddDbContext<FgcGamesContext>(options => options.UseNpgsql(configuration.GetConnectionString("Default")));
