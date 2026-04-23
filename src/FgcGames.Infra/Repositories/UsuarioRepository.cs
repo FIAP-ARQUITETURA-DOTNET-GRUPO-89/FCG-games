@@ -26,7 +26,8 @@ public class UsuarioRepository : IUsuarioRepository
 
     public Task<IReadOnlyList<Usuario>> GetAllAsync() => throw new NotImplementedException();
 
-    public Task<Usuario?> GetByIdAsync(int id) => throw new NotImplementedException();
+    //public Task<Usuario?> GetByIdAsync(int id) => throw new NotImplementedException();
+    public Task<Usuario?> GetByIdAsync(Guid id) => throw new NotImplementedException();
 
     public Task<int> SaveChangesAsync() => throw new NotImplementedException();
 

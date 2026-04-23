@@ -8,7 +8,7 @@ public class DeleteUserValidator : AbstractValidator<DeleteUserCommand>
     public DeleteUserValidator()
     {
         RuleFor(x => x.Id)
-            .GreaterThan(0)
-            .LessThanOrEqualTo(int.MaxValue);
+            .NotEmpty()
+            .WithMessage("O Id do usuário é obrigatório e deve ser um identificador válido.");
     }
 }
