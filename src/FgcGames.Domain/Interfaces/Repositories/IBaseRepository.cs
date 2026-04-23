@@ -6,7 +6,8 @@
 
     void Delete(T entity);
 
-    Task<T?> GetByIdAsync(int id);
+    //Task<T?> GetByIdAsync(int id);
+    Task<T?> GetByIdAsync(Guid id);
 
     Task<IReadOnlyList<T>> GetAllAsync();
 

@@ -1,5 +1,5 @@
 ﻿namespace FgcGames.Application.Commands;
 
-public record DeleteUserCommand(int Id)
+public record DeleteUserCommand(Guid Id)
 {
 }
