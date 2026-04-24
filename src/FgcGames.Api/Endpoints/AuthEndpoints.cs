@@ -14,6 +14,7 @@ public static class AuthEndpoints
 
         group.MapPost("/", Login)
             .AddEndpointFilter<ValidationFilter<LoginCommand>>()
+            .AllowAnonymous()
             .WithSummary("Realiza a autenticação do usuário")
             .WithDescription("Autentica um usuário com base nas credenciais fornecidas e retorna um token de acesso.")
             .Produces<LoginResponse>(StatusCodes.Status200OK)
