@@ -32,6 +32,6 @@ public class DeleteUserHandler(ILogger<DeleteUserHandler> logger, IUsuarioReposi
         user.Nome,
         user.Inativo,
         $"O usuário {user.Nome} foi inativado com sucesso."
-    );
+        );
     }
 }

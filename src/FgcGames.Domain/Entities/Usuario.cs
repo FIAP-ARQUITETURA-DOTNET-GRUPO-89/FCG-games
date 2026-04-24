@@ -29,6 +29,18 @@ public class Usuario : Entity, IAggregateRoot
         Role = userRole;
     }
 
+    public void AtualizarPerfil(string nome, DateTime dataNascimento)
+    {
+        if (string.IsNullOrWhiteSpace(nome))
+            throw new ArgumentException("O nome não pode estar vazio.");
+
+        if (dataNascimento > DateTime.Now)
+            throw new ArgumentException("A data de nascimento não pode ser uma data futura.");
+
+        Nome = nome;
+        DataNascimento = dataNascimento;
+    }
+
     public void AlterarSenha(Senha novaSenha)
     {
         //implementar
