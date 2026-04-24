@@ -17,17 +17,17 @@ public class UpdateUserValidator : AbstractValidator<UpdateUserCommand>
             .NotEmpty().WithMessage("A data de nascimento é obrigatória.")
             .LessThan(DateTime.Today).WithMessage("A data de nascimento deve ser no passado.");
 
-        RuleFor(a => a.Email)
-            .NotEmpty()
-            .Length(1, 254)
-            .EmailAddress().WithMessage("O formato do email é inválido.");
+        //RuleFor(a => a.Email)
+        //    .NotEmpty()
+        //    .Length(1, 254)
+        //    .EmailAddress().WithMessage("O formato do email é inválido.");
 
-        RuleFor(a => a.Senha)
-            .NotEmpty()
-            .Length(8, 12)
-            .Matches(@"[A-Z]").WithMessage("A senha deve conter pelo menos uma letra maiúscula.")
-            .Matches(@"[a-z]").WithMessage("A senha deve conter pelo menos uma letra minúscula.")
-            .Matches(@"[0-9]").WithMessage("A senha deve conter pelo menos um número.")
-            .Matches(@"[!?*.]").WithMessage("A senha deve conter pelo menos um caractere especial (!? *.).");
+        //RuleFor(a => a.Senha)
+        //    .NotEmpty()
+        //    .Length(8, 12)
+        //    .Matches(@"[A-Z]").WithMessage("A senha deve conter pelo menos uma letra maiúscula.")
+        //    .Matches(@"[a-z]").WithMessage("A senha deve conter pelo menos uma letra minúscula.")
+        //    .Matches(@"[0-9]").WithMessage("A senha deve conter pelo menos um número.")
+        //    .Matches(@"[!?*.]").WithMessage("A senha deve conter pelo menos um caractere especial (!? *.).");
     }
 }

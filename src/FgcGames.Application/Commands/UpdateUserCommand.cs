@@ -1,5 +1,5 @@
 ﻿namespace FgcGames.Application.Commands;
 
-public record UpdateUserCommand(string Nome, string Email, DateTime DataNascimento, string Senha)
+public record UpdateUserCommand(Guid Id, string Nome, DateTime DataNascimento)
 {
 }
