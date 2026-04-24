@@ -10,24 +10,21 @@ namespace FgcGames.IntegrationTests.Endpoints;
 public class CRUDExampleIntegrationTests(IntegrationTestFixture fixture) : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
 {
     private readonly IntegrationTestFixture _fixture = fixture;
-    private readonly HttpClient _client = fixture.HttpClient;
 
-    public async ValueTask InitializeAsync()
-    {
-        await _fixture.ResetDatabaseAsync();
-        _fixture.ResetAuth();
-    }
+    public async ValueTask InitializeAsync() => await _fixture.ResetDatabaseAsync();
+
+    public ValueTask DisposeAsync() => ValueTask.CompletedTask;
 
     [Fact]
     public async Task Dado_DadosValidos_Quando_CriarTask_Entao_CriaComSucesso()
     {
         // Arrange
-        await _fixture.AuthenticateAsAdminAsync();
+        var client = await TestAuthHelper.CreateAdminClientAsync(_fixture);
 
         var request = new { title = $"Task {Guid.NewGuid()}" };
 
         // Act
-        var response = await _client.PostAsJsonAsync(
+        var response = await client.PostAsJsonAsync(
             "/crud-example/task-items",
             request,
             TestContext.Current.CancellationToken);
@@ -35,7 +32,9 @@ public class CRUDExampleIntegrationTests(IntegrationTestFixture fixture) : IClas
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Created);
 
-        var result = await response.ReadContentAsync<CreateTaskItemExampleResponse>(TestContext.Current.CancellationToken);
+        var result = await response.ReadContentAsync<CreateTaskItemExampleResponse>(
+            TestContext.Current.CancellationToken);
+
         result.ShouldNotBeNull();
         result.Title.ShouldBe(request.title);
         result.IsCompleted.ShouldBeFalse();
@@ -46,12 +45,12 @@ public class CRUDExampleIntegrationTests(IntegrationTestFixture fixture) : IClas
     public async Task Dado_TituloVazio_Quando_CriarTask_Entao_Retorna400()
     {
         // Arrange
-        await _fixture.AuthenticateAsAdminAsync();
+        var client = await TestAuthHelper.CreateAdminClientAsync(_fixture);
 
         var request = new { title = "" };
 
         // Act
-        var response = await _client.PostAsJsonAsync("/crud-example/task-items", request, TestContext.Current.CancellationToken);
+        var response = await client.PostAsJsonAsync("/crud-example/task-items", request, TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
@@ -64,12 +63,13 @@ public class CRUDExampleIntegrationTests(IntegrationTestFixture fixture) : IClas
     [Fact]
     public async Task Dado_TituloMaiorQue100Caracteres_Quando_CriarTask_Entao_Retorna400()
     {
-        await _fixture.AuthenticateAsAdminAsync();
+        // Arrange
+        var client = await TestAuthHelper.CreateAdminClientAsync(_fixture);
 
         var request = new { title = new string('a', 101) };
 
         // Act
-        var response = await _client.PostAsJsonAsync("/crud-example/task-items", request, TestContext.Current.CancellationToken);
+        var response = await client.PostAsJsonAsync("/crud-example/task-items", request, TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
@@ -83,13 +83,12 @@ public class CRUDExampleIntegrationTests(IntegrationTestFixture fixture) : IClas
     public async Task Dado_TituloDuplicado_Quando_CriarTask_Entao_Retorna409()
     {
         // Arrange
-        await _fixture.AuthenticateAsAdminAsync();
+        var client = await TestAuthHelper.CreateAdminClientAsync(_fixture);
 
         var title = $"Task {Guid.NewGuid()}";
-
         var request = new { title };
 
-        var first = await _client.PostAsJsonAsync(
+        var first = await client.PostAsJsonAsync(
             "/crud-example/task-items",
             request,
             TestContext.Current.CancellationToken);
@@ -97,7 +96,7 @@ public class CRUDExampleIntegrationTests(IntegrationTestFixture fixture) : IClas
         first.StatusCode.ShouldBe(HttpStatusCode.Created);
 
         // Act
-        var second = await _client.PostAsJsonAsync(
+        var second = await client.PostAsJsonAsync(
             "/crud-example/task-items",
             request,
             TestContext.Current.CancellationToken);
@@ -115,12 +114,12 @@ public class CRUDExampleIntegrationTests(IntegrationTestFixture fixture) : IClas
     public async Task Dado_SemToken_Quando_CriarTask_Entao_Retorna401()
     {
         // Arrange 
-        _fixture.ResetAuth();
+        var client = TestAuthHelper.CreateAnonymousClient(_fixture);
 
         var request = new { title = "Task sem auth" };
 
         // Act
-        var response = await _client.PostAsJsonAsync(
+        var response = await client.PostAsJsonAsync(
             "/crud-example/task-items",
             request,
             TestContext.Current.CancellationToken);
@@ -134,17 +133,16 @@ public class CRUDExampleIntegrationTests(IntegrationTestFixture fixture) : IClas
         problem.Detail.ShouldBe("Credenciais de autenticação ausentes ou inválidas.");
     }
 
-
     [Fact]
     public async Task Dado_UserSemAutorizacao_Quando_CriarTask_Entao_Retorna403()
     {
         // Arrange
-        await _fixture.AuthenticateAsUserAsync();
+        var client = await TestAuthHelper.CreateUserClientAsync(_fixture);
 
         var request = new { title = "Task proibida" };
 
         // Act
-        var response = await _client.PostAsJsonAsync(
+        var response = await client.PostAsJsonAsync(
             "/crud-example/task-items",
             request,
             TestContext.Current.CancellationToken);
@@ -162,18 +160,22 @@ public class CRUDExampleIntegrationTests(IntegrationTestFixture fixture) : IClas
     public async Task Dado_User_Quando_BuscarTask_Entao_PodeAcessar()
     {
         // Arrange
-        await _fixture.AuthenticateAsAdminAsync();
+        var adminClient = await TestAuthHelper.CreateAdminClientAsync(_fixture);
 
-        var create = await _client.PostAsJsonAsync("/crud-example/task-items",
+        var create = await adminClient.PostAsJsonAsync(
+            "/crud-example/task-items",
             new { title = $"Task {Guid.NewGuid()}" },
             TestContext.Current.CancellationToken);
 
-        var created = await create.ReadContentAsync<CreateTaskItemExampleResponse>(TestContext.Current.CancellationToken);
+        var created = await create.ReadContentAsync<CreateTaskItemExampleResponse>(
+            TestContext.Current.CancellationToken);
 
-        await _fixture.AuthenticateAsUserAsync();
+        var userClient = await TestAuthHelper.CreateUserClientAsync(_fixture);
 
         // Act
-        var response = await _client.GetAsync($"/crud-example/task-items/{created!.Id}", TestContext.Current.CancellationToken);
+        var response = await userClient.GetAsync(
+            $"/crud-example/task-items/{created!.Id}",
+            TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -184,6 +186,4 @@ public class CRUDExampleIntegrationTests(IntegrationTestFixture fixture) : IClas
         result.IsCompleted.ShouldBeFalse();
         result.Id.ShouldBeGreaterThan(0);
     }
-
-    public ValueTask DisposeAsync() => ValueTask.CompletedTask;
 }
