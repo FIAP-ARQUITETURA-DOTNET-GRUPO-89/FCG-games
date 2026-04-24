@@ -1,103 +1,231 @@
 {
-	"info": {
-		"_postman_id": "f92a3e0f-361f-47d0-b677-deacbff9aed2",
-		"name": "FgcGames-API",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "47020562",
-		"_collection_link": "https://thainaromao123-1112684.postman.co/workspace/Thaina-Rom%25C3%25A3o's-Workspace~18b91e26-5104-4982-835b-85e8c5bdd87e/collection/47020562-f92a3e0f-361f-47d0-b677-deacbff9aed2?action=share&source=collection_link&creator=47020562"
-	},
-	"item": [
-		{
-			"name": "Auth",
-			"item": [
-				{
-					"name": "New Request",
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"maria.silva@email.com\",\r\n  \"senha\": \"Abc!1234\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "https://localhost:7115/auth",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "7115",
-							"path": [
-								"auth"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Jogo",
-			"item": []
-		},
-		{
-			"name": "Usuario",
-			"item": []
-		},
-		{
-			"name": "Teste",
-			"item": [
-				{
-					"name": "Create",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtYXJpYS5zaWx2YUBlbWFpbC5jb20iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImp0aSI6ImNmNDNhNTliLWVhZmUtNDdkMi1hNTdjLTczNjAwNWE0YWE1YiIsImV4cCI6MTc3NjgxNjE3NywiaXNzIjoiRmdjR2FtZXMtSXNzdWVyIn0.CS3xQPK2Jvji-fk6R0YwJXR7U7tzRQo-z2e9IvFDzS8",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"title\": \"string\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "https://localhost:7115/crud-example/task-items",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "7115",
-							"path": [
-								"crud-example",
-								"task-items"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "New Request",
-					"request": {
-						"method": "GET",
-						"header": []
-					},
-					"response": []
-				}
-			]
-		}
-	]
+  "info": {
+    "_postman_id": "68448e31-7b0e-4801-abfb-80f605a5cd8e",
+    "name": "FgcGames-API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "16325510"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Auth Maria | ADM",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// 1. Converte a resposta para JSON\r",
+                  "const responseData = pm.response.json();\r",
+                  "\r",
+                  "// 2. Extrai o token\r",
+                  "const tokenValue = responseData.token;\r",
+                  "\r",
+                  "// 3. Salva especificamente nas variáveis da COLEÇÃO\r",
+                  "pm.collectionVariables.set(\"token\", tokenValue);\r",
+                  "\r",
+                  "console.log(\"Token salvo na Coleção: \" + pm.collectionVariables.get(\"token\"));"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"maria.silva@email.com\",\r\n  \"senha\": \"Abc!1234\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://localhost:7115/auth",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7115",
+              "path": [
+                "auth"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Auth João | User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// 1. Converte a resposta para JSON\r",
+                  "const responseData = pm.response.json();\r",
+                  "\r",
+                  "// 2. Extrai o token\r",
+                  "const tokenValue = responseData.token;\r",
+                  "\r",
+                  "// 3. Salva especificamente nas variáveis da COLEÇÃO\r",
+                  "pm.collectionVariables.set(\"token\", tokenValue);\r",
+                  "\r",
+                  "console.log(\"Token salvo na Coleção: \" + pm.collectionVariables.get(\"token\"));"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"joao.silva@email.com\",\r\n  \"senha\": \"Abc!1234\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://localhost:7115/auth",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7115",
+              "path": [
+                "auth"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Jogo",
+      "item": []
+    },
+    {
+      "name": "Usuario",
+      "item": []
+    },
+    {
+      "name": "Teste",
+      "item": [
+        {
+          "name": "Create",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"string\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://localhost:7115/crud-example/task-items",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7115",
+              "path": [
+                "crud-example",
+                "task-items"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetById",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "https://localhost:7115/crud-example/task-items/1",
+              "protocol": "https",
+              "host": [
+                "localhost"
+              ],
+              "port": "7115",
+              "path": [
+                "crud-example",
+                "task-items",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "Token",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ]
 }
