@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Security.Claims;
+using System.Text;
 using FgcGames.Shared.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
@@ -47,7 +48,8 @@ public static class AuthAuthzConfigExtensions
         ValidateIssuerSigningKey = true,
         ValidIssuer = jwt.Issuer,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.SecurityKey)),
-        ClockSkew = TimeSpan.Zero
+        ClockSkew = TimeSpan.Zero,
+        RoleClaimType = ClaimTypes.Role
     };
 
     private static JwtBearerEvents BuildJwtEvents() => new()
