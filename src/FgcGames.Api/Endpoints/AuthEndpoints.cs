@@ -27,11 +27,6 @@ public static class AuthEndpoints
     {
         var result = await handler.Handle(command);
 
-        if (result is null)
-        {
-            return Results.Unauthorized();
-        }
-
         return Results.Ok(result);
     }
 }

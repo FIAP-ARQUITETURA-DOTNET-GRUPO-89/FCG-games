@@ -17,9 +17,21 @@ public class LoginHandler(ILogger<LoginHandler> logger, IUsuarioRepository repos
     {
         var usuario = await _repository.ObterPorEmailAsync(command.Email);
 
-        if(usuario is null || !_senhaHasher.VerificarSenha(command.Senha, usuario.Senha.Hash)) 
+        if (usuario is null)
         {
-            _logger.LogWarning("Tentativa de login inválida para o {Email}", command.Email);
+            _logger.LogWarning("Login falhou: usuário não encontrado para {Email}", command.Email);
+            throw new UnauthorizedAccessException("Credenciais inválidas.");
+        }
+
+        if (usuario.Inativo)
+        {
+            _logger.LogWarning("Login falhou: usuário inativo para {Email}", command.Email);
+            throw new UnauthorizedAccessException("Credenciais inválidas.");
+        }
+
+        if (!_senhaHasher.VerificarSenha(command.Senha, usuario.Senha.Hash))
+        {
+            _logger.LogWarning("Login falhou: senha inválida para {Email}", command.Email);
             throw new UnauthorizedAccessException("Credenciais inválidas.");
         }
 
