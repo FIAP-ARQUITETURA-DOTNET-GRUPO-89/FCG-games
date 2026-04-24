@@ -10,7 +10,7 @@ public static class ConfigureServicesExtensions
     {
         services.AddAuthentication();
         services.AddAuthorization();
-        services.AuthAuthzConfig();
+        services.AuthnAuthzConfig();
 
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(options =>
