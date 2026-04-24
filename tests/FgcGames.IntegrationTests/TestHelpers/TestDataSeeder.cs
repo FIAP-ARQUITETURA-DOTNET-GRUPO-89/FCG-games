@@ -7,11 +7,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FgcGames.IntegrationTests.TestHelpers;
 
+/// <summary>
+/// Responsável por popular o banco de dados com dados iniciais necessários para os testes de integração.
+/// </summary>
 public static class TestDataSeeder
 {
-    public static async Task SeedAsync(
-        FgcGamesContext context,
-        ISenhaHasherService senhaHasher)
+    public static async Task SeedAsync(FgcGamesContext context, ISenhaHasherService senhaHasher)
     {
         if (await context.Usuarios.AnyAsync())
         {
