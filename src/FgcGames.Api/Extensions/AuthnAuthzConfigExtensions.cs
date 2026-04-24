@@ -8,9 +8,9 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace FgcGames.Api.Extensions;
 
-public static class AuthAuthzConfigExtensions
+public static class AuthnAuthzConfigExtensions
 {
-    public static IServiceCollection AuthAuthzConfig(this IServiceCollection services)
+    public static IServiceCollection AuthnAuthzConfig(this IServiceCollection services)
     {
         ConfigureAuthentication(services);
         ConfigureJwtOptions(services);
