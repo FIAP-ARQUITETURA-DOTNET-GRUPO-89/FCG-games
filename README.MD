@@ -12,8 +12,10 @@ A **FIAP Cloud Games** é uma plataforma para venda de jogos digitais e gestão 
 - [📂 Estrutura de Documentação](#-estrutura-de-documentação)
 - [🛠️ Requisitos Mínimos](#️-requisitos-mínimos)
 - [🚀 Como Executar](#-como-executar)
+- [🔐 Autenticação](#-autenticação)
+- [🌱 Seed de dados (Development)](#-seed-de-dados-development)
 - [🧪 Testes](#-testes)
-- [👥 Grupo (G89)](#-grupo-g89)
+- [👥 Grupo (G89)](#-grupo)
 - [✨ Sobre este repositório](#-sobre-este-repositório)
 
 ## 📂 Estrutura de Documentação
@@ -30,7 +32,7 @@ Para entender as decisões técnicas e o fluxo do projeto, explore a pasta [`/do
 
 Antes de começar, certifique-se de ter instalado:
 
-- **SDK .NET 10:** https://dotnet.microsoft.com/download/dotnet/10.0
+- **SDK .NET 10:** [https://dotnet.microsoft.com/download/dotnet/10.0](https://dotnet.microsoft.com/download/dotnet/10.0)
 - **Container Runtime:** Docker, Podman ou Rancher Desktop
 - **Workload Aspire:**
   ```bash
@@ -63,6 +65,72 @@ No dashboard do Aspire você poderá:
 - Consultar logs centralizados
 - Acompanhar traces das requisições
 - Acessar o PgAdmin
+
+## 🔐 Autenticação
+
+A API utiliza autenticação baseada em JWT.
+
+### ▶️ Login
+
+```bash
+curl -X POST https://localhost:7115/auth \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "usuario@email.com",
+    "senha": "sua_senha"
+  }'
+```
+
+✔ A resposta retorna um token JWT
+✔ Utilize nas requisições protegidas:
+
+```bash
+-H "Authorization: Bearer {seu_token}"
+```
+
+## 🌱 Seed de dados (Development)
+
+Em ambiente de desenvolvimento (`Development`), a aplicação executa automaticamente:
+
+- ✔ Migrations do banco de dados
+- ✔ Seed inicial de usuários
+
+Usuários disponíveis:
+
+| Nome        | Email                                                 | Senha    | Role  |
+| ----------- | ----------------------------------------------------- | -------- | ----- |
+| Maria Silva | [maria.silva@email.com](mailto:maria.silva@email.com) | Abc!1234 | Admin |
+| João Silva  | [joao.silva@email.com](mailto:joao.silva@email.com)   | Abc!1234 | User  |
+
+## 🧪 Testando autenticação localmente
+
+### 🔹 User
+
+```bash
+curl -X POST https://localhost:7115/auth \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "joao.silva@email.com",
+    "senha": "Abc!1234"
+  }'
+```
+
+### 🔹 Admin
+
+```bash
+curl -X POST https://localhost:7115/auth \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "maria.silva@email.com",
+    "senha": "Abc!1234"
+  }'
+```
+
+## 📬 Coleção Postman
+
+Para facilitar os testes, utilize a coleção disponível em:
+
+👉 [`./docs/api-collection`](./docs/api-collection)
 
 ## 🧪 Testes
 
