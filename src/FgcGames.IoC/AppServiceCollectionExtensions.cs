@@ -30,6 +30,11 @@ public static class AppServiceCollectionExtensions
         services.AddScoped<IGetTaskItemByIdHandler, GetTaskItemByIdExampleHandler>();
         services.AddScoped<IUpdateTaskItemExampleHandler, UpdateTaskItemExampleHandler>();
         services.AddScoped<IDeleteTaskItemExampleHandler, DeleteTaskItemExampleHandler>();
+        services.AddScoped<IGetUsersByNameHandler, GetUsersByNameHandler>();
+        services.AddScoped<ICreateUserHandler, CreateUserHandler>();
+        services.AddScoped<IUpdateUserHandler, UpdateUserHandler>();
+        services.AddScoped<IUpdatePasswordHandler, UpdatePasswordHandler>();
+        services.AddScoped<IDeleteUserHandler, DeleteUserHandler>();
 
         services.AddScoped<ILoginHandler, LoginHandler>();
 
