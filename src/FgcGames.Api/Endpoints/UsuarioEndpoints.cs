@@ -1,8 +1,6 @@
 ﻿using FgcGames.Api.Filters;
 using FgcGames.Application.Commands;
-using FgcGames.Application.Handlers;
 using FgcGames.Application.Interfaces;
-using FgcGames.Application.Queries;
 using FgcGames.Application.Responses;
 using Microsoft.AspNetCore.Mvc;
 
