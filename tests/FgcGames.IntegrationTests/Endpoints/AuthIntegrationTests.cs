@@ -151,7 +151,7 @@ public class AuthIntegrationTests(IntegrationTestFixture fixture) : IClassFixtur
         errors.ShouldContainKey("Senha");
         errors["Senha"].ShouldBe(
         [
-            "'Senha' deve ser informado.",
+            "'Senha' deve ser informada.",
             "'Senha' deve ter entre 8 e 12 caracteres. Você digitou 0 caracteres.",
             "A senha deve conter pelo menos uma letra maiúscula.",
             "A senha deve conter pelo menos uma letra minúscula.",
