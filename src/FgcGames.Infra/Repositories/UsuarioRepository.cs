@@ -5,12 +5,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FgcGames.Infra.Repositories;
 
-public class UsuarioRepository(FgcGamesContext dbContext) : IUsuarioRepository
+public class UsuarioRepository(FgcGamesContext context) : BaseRepository<Usuario>(context), IUsuarioRepository
 {
-    private readonly FgcGamesContext _dbContext = dbContext;
-
     public async Task<Usuario?> ObterPorEmailAsync(string email)
-        => await _dbContext.Set<Usuario>()
+        => await _context.Set<Usuario>()
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Email.Endereco.ToLower() == email.ToLower());
 }
