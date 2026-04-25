@@ -152,11 +152,11 @@ public class AuthIntegrationTests(IntegrationTestFixture fixture) : IClassFixtur
         errors["Senha"].ShouldBe(
         [
             "'Senha' deve ser informado.",
-            "'Senha' deve ter exatamente 8 caracteres. Você digitou 0 caracteres.",
+            "'Senha' deve ter entre 8 e 12 caracteres. Você digitou 0 caracteres.",
             "A senha deve conter pelo menos uma letra maiúscula.",
             "A senha deve conter pelo menos uma letra minúscula.",
             "A senha deve conter pelo menos um número.",
-            "A senha deve conter pelo menos um caractere especial (!? *.)."
+            "A senha deve conter pelo menos um caractere especial. Exemplos permitidos: ! ? * . @ # $ % &"
         ]);
     }
 
