@@ -4,8 +4,6 @@ public record Senha
 {
     public string Hash { get; }
 
-    //protected Senha() : this(string.Empty) { }
-
     private Senha(string hash) 
     {
         if (string.IsNullOrWhiteSpace(hash))

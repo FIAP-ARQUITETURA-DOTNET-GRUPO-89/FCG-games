@@ -12,5 +12,5 @@ public class UsuarioRepository(FgcGamesContext dbContext) : IUsuarioRepository
     public async Task<Usuario?> ObterPorEmailAsync(string email)         
         => await _dbContext.Set<Usuario>()
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Email.Endereco == email);
+            .FirstOrDefaultAsync(x => x.Email.Endereco.ToLower() == email.ToLower());
 }

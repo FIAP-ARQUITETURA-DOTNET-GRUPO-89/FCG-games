@@ -14,10 +14,10 @@ public class LoginValidator : AbstractValidator<LoginCommand>
 
         RuleFor(a => a.Senha)
             .NotEmpty()
-            .Length(8)
+            .Length(8, 12)
             .Matches(@"[A-Z]").WithMessage("A senha deve conter pelo menos uma letra maiúscula.")
             .Matches(@"[a-z]").WithMessage("A senha deve conter pelo menos uma letra minúscula.")
             .Matches(@"[0-9]").WithMessage("A senha deve conter pelo menos um número.")
-            .Matches(@"[\!\?\*\.]").WithMessage("A senha deve conter pelo menos um caractere especial (!? *.).");
+            .Matches(@"[!?\*\.@#$%&]").WithMessage("A senha deve conter pelo menos um caractere especial. Exemplos permitidos: ! ? * . @ # $ % &");
     }
 }
