@@ -1,4 +1,5 @@
 ﻿using FgcGames.Application.Handlers;
+using FgcGames.Application.Interfaces;
 using FgcGames.Application.Validators;
 using FgcGames.Domain.Interfaces.Repositories;
 using FgcGames.Infra.Database;
@@ -23,8 +24,14 @@ public static class AppServiceCollectionExtensions
         services.AddScoped<IGetTaskItemByIdHandler, GetTaskItemByIdExampleHandler>();
         services.AddScoped<IUpdateTaskItemExampleHandler, UpdateTaskItemExampleHandler>();
         services.AddScoped<IDeleteTaskItemExampleHandler, DeleteTaskItemExampleHandler>();
+        services.AddScoped<IGetUsersByNameHandler, GetUsersByNameHandler>();
+        services.AddScoped<ICreateUserHandler, CreateUserHandler>();
+        services.AddScoped<IUpdateUserHandler, UpdateUserHandler>();
+        services.AddScoped<IUpdatePasswordHandler, UpdatePasswordHandler>();
+        services.AddScoped<IDeleteUserHandler, DeleteUserHandler>();
 
         // Repositories
         services.AddScoped<ITaskItemExampleRepository, TaskItemExampleRepository>();
+        services.AddScoped<IUsuarioRepository, UsuarioRepository>();
     }
 }
