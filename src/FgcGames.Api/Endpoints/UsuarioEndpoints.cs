@@ -43,6 +43,16 @@ public static class UsuarioEndpoints
             .Produces(StatusCodes.Status409Conflict)
             .Produces(StatusCodes.Status500InternalServerError);
 
+        userGroup.MapPatch("/{id:Guid}/role", UpdateUserRole)
+            .AddEndpointFilter<ValidationFilter<UpdateUserRoleCommand>>()
+            .WithSummary("Atualiza a role de um usuário")
+            .WithDescription("Endpoint responsável por atualizar a role de um usuário existente.")
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesValidationProblem(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status404NotFound)
+            .Produces(StatusCodes.Status409Conflict)
+            .Produces(StatusCodes.Status500InternalServerError);
+
         userGroup.MapPut("/{id:Guid}/password", UpdatePassword)
             .AddEndpointFilter<ValidationFilter<UpdatePasswordCommand>>()
             .WithSummary("Atualiza a senha de um usuário")
@@ -76,6 +86,12 @@ public static class UsuarioEndpoints
     }
 
     private static async Task<IResult> UpdateUser(Guid id, UpdateUserCommand command, [FromServices] IUpdateUserHandler handler)
+    {
+        await handler.Handle(command);
+        return Results.NoContent();
+    }
+
+    private static async Task<IResult> UpdateUserRole(Guid id, UpdateUserRoleCommand command, [FromServices] IUpdateUserRoleHandler handler)
     {
         await handler.Handle(command);
         return Results.NoContent();

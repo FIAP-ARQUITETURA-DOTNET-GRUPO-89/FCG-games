@@ -47,6 +47,11 @@ public class Usuario : Entity, IAggregateRoot
         Senha = novaSenha;
     }
 
+    public void AlterarRole(UserRole novaRole)
+    {
+        Role = novaRole;
+    }
+
     public void Inativar() => Inativo = true;
 
     public bool EhAdmin() => Role == UserRole.Admin;
