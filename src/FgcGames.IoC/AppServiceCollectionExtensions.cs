@@ -27,6 +27,7 @@ public static class AppServiceCollectionExtensions
         services.AddScoped<IGetUsersByNameHandler, GetUsersByNameHandler>();
         services.AddScoped<ICreateUserHandler, CreateUserHandler>();
         services.AddScoped<IUpdateUserHandler, UpdateUserHandler>();
+        services.AddScoped<IUpdateUserRoleHandler, UpdateUserRoleHandler>();
         services.AddScoped<IUpdatePasswordHandler, UpdatePasswordHandler>();
         services.AddScoped<IDeleteUserHandler, DeleteUserHandler>();
 
