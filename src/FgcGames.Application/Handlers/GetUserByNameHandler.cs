@@ -21,7 +21,7 @@ public class GetUsersByNameHandler(IUsuarioRepository repository) : IGetUsersByN
             );
         }
 
-        Expression<Func<Usuario, bool>> filtro = u => u.Nome.Contains(query.Nome);
+        Expression<Func<Usuario, bool>> filtro = u => u.Nome.Contains(query.Nome) && !u.Inativo;
 
         var totalUsers = await _repository.CountAsync(filtro);
         var users = await _repository.GetPagedAsync(
