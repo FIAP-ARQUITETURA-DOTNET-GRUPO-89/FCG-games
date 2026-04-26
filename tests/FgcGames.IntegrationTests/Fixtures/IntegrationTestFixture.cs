@@ -1,5 +1,7 @@
 ﻿using Aspire.Hosting;
 using Aspire.Hosting.Testing;
+using FgcGames.Infra.Database;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FgcGames.IntegrationTests.Fixtures;
 
@@ -30,6 +32,18 @@ public class IntegrationTestFixture : IAsyncLifetime
         {
             BaseAddress = originalClient.BaseAddress
         };
+    }
+
+    public async Task ExecuteDbContextAsync(Func<FgcGamesContext, Task> action)
+    {
+        // Abre um escopo de Injeção de Dependência da aplicação orquestrada pelo Aspire
+        using var scope = App.Services.CreateScope();
+
+        // Recupera o Contexto do banco de dados real
+        var context = scope.ServiceProvider.GetRequiredService<FgcGamesContext>();
+
+        // Executa a tarefa (Ex: context.Usuarios.Add ou FirstOrDefault)
+        await action(context);
     }
 
     public async ValueTask DisposeAsync() => await App.DisposeAsync();

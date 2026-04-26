@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\FgcGames.AppHost\FgcGames.AppHost.csproj" />
     <ProjectReference Include="..\..\src\FgcGames.Application\FgcGames.Application.csproj" />
+    <ProjectReference Include="..\..\src\FgcGames.Infra\FgcGames.Infra.csproj" />
   </ItemGroup>
 
   <ItemGroup>
