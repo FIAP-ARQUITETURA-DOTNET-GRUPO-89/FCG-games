@@ -1,5 +1,6 @@
 ﻿using Aspire.Hosting;
 using Aspire.Hosting.Testing;
+using FgcGames.Infra.Database;
 using FgcGames.IntegrationTests.TestHelpers;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -43,6 +44,13 @@ public class IntegrationTestFixture : IAsyncLifetime
         _dbManager = new TestDatabaseManager(connectionString);
 
         await _dbManager.InitializeAsync();
+    }
+
+    public async Task ExecuteDbContextAsync(Func<FgcGamesContext, Task> action)
+    {
+        using var scope = App.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<FgcGamesContext>();
+        await action(context);
     }
 
     /// <summary>

@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 
 namespace FgcGames.Application.Handlers;
 
-
 public class CreateUserHandler(ILogger<CreateUserHandler> logger, IUsuarioRepository repository) : ICreateUserHandler
 {
     private readonly ILogger<CreateUserHandler> _logger = logger;
