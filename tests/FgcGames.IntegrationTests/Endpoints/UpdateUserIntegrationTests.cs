@@ -30,7 +30,7 @@ public class UpdateUserIntegrationTests(IntegrationTestFixture fixture) : IClass
         var command = new UpdateUserCommand(userId, "Novo Nome Generico", new DateTime(1995, 10, 15));
 
         // ACT
-        var response = await _client.PutAsJsonAsync($"/usuarios/users/{userId}", command, TestContext.Current.CancellationToken);
+        var response = await _client.PutAsJsonAsync($"/usuarios/{userId}", command, TestContext.Current.CancellationToken);
 
         // ASSERT
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -57,7 +57,7 @@ public class UpdateUserIntegrationTests(IntegrationTestFixture fixture) : IClass
         var command = new UpdateUserCommand(idInexistente, "Nome Teste", DateTime.Now.AddYears(-20));
 
         // ACT
-        var response = await _client.PutAsJsonAsync($"/usuarios/users/{idInexistente}", command, TestContext.Current.CancellationToken);
+        var response = await _client.PutAsJsonAsync($"/usuarios/{idInexistente}", command, TestContext.Current.CancellationToken);
 
         // ASSERT
         response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
@@ -80,7 +80,7 @@ public class UpdateUserIntegrationTests(IntegrationTestFixture fixture) : IClass
         var command = new UpdateUserRoleCommand(userId, novaRole);
 
         // ACT
-        var response = await _client.PatchAsJsonAsync($"/usuarios/users/{userId}/role", command, TestContext.Current.CancellationToken);
+        var response = await _client.PatchAsJsonAsync($"/usuarios/{userId}/role", command, TestContext.Current.CancellationToken);
 
         // ASSERT
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -110,7 +110,7 @@ public class UpdateUserIntegrationTests(IntegrationTestFixture fixture) : IClass
         var command = new UpdatePasswordCommand(userId, novaSenhaRaw);
 
         // ACT
-        var response = await _client.PatchAsJsonAsync($"/usuarios/users/{userId}/password", command, TestContext.Current.CancellationToken);
+        var response = await _client.PatchAsJsonAsync($"/usuarios/{userId}/password", command, TestContext.Current.CancellationToken);
 
         // ASSERT
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -140,7 +140,7 @@ public class UpdateUserIntegrationTests(IntegrationTestFixture fixture) : IClass
         var command = new UpdatePasswordCommand(userId, "123");
 
         // ACT
-        var response = await _client.PatchAsJsonAsync($"/usuarios/users/{userId}/password", command, TestContext.Current.CancellationToken);
+        var response = await _client.PatchAsJsonAsync($"/usuarios/{userId}/password", command, TestContext.Current.CancellationToken);
 
         // ASSERT
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);

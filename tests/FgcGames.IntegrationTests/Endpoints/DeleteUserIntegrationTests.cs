@@ -37,7 +37,7 @@ public class DeleteUserIntegrationTests(IntegrationTestFixture fixture) : IClass
         });
 
         // ACT
-        var response = await _client.DeleteAsync($"/usuarios/users/{userId}", TestContext.Current.CancellationToken);
+        var response = await _client.DeleteAsync($"/usuarios/{userId}", TestContext.Current.CancellationToken);
 
         // ASSERT
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -61,7 +61,7 @@ public class DeleteUserIntegrationTests(IntegrationTestFixture fixture) : IClass
         var idInexistente = Guid.NewGuid();
 
         // ACT
-        var response = await _client.DeleteAsync($"/usuarios/users/{idInexistente}", TestContext.Current.CancellationToken);
+        var response = await _client.DeleteAsync($"/usuarios/{idInexistente}", TestContext.Current.CancellationToken);
 
         // ASSERT
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);

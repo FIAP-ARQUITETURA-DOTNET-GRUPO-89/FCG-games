@@ -27,7 +27,7 @@ public class CreateUserIntegrationTests(IntegrationTestFixture fixture) : IClass
         );
 
         // ACT
-        var response = await _client.PostAsJsonAsync("/usuarios/users", command, TestContext.Current.CancellationToken);
+        var response = await _client.PostAsJsonAsync("/usuarios", command, TestContext.Current.CancellationToken);
 
         // ASSERT
         response.StatusCode.ShouldBe(HttpStatusCode.Created);
@@ -80,7 +80,7 @@ public class CreateUserIntegrationTests(IntegrationTestFixture fixture) : IClass
         );
 
         // ACT
-        var response = await _client.PostAsJsonAsync("/usuarios/users", command, TestContext.Current.CancellationToken);
+        var response = await _client.PostAsJsonAsync("/usuarios", command, TestContext.Current.CancellationToken);
 
         // ASSERT
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
@@ -99,7 +99,7 @@ public class CreateUserIntegrationTests(IntegrationTestFixture fixture) : IClass
         );
 
         // ACT
-        var response = await _client.PostAsJsonAsync("/usuarios/users", command, TestContext.Current.CancellationToken);
+        var response = await _client.PostAsJsonAsync("/usuarios", command, TestContext.Current.CancellationToken);
 
         // ASSERT
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
