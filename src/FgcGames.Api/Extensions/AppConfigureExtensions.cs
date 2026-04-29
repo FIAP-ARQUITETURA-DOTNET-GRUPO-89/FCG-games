@@ -1,13 +1,14 @@
 ﻿using FgcGames.Api.Endpoints;
 using FgcGames.Api.Middlewares;
+using FgcGames.Application.Interfaces;
 using FgcGames.Infra.Database;
+using FgcGames.Infra.Seed;
 using Microsoft.EntityFrameworkCore;
 
 namespace FgcGames.Api.Extensions;
 
 public static class AppConfigureExtensions
 {
-    public static void Configure(this WebApplication app)
     {
         app.UseMiddleware<ExceptionMiddleware>();
         app.UseHttpsRedirection();
@@ -24,18 +25,21 @@ public static class AppConfigureExtensions
             });
 
             using var scope = app.Services.CreateScope();
+
             var db = scope.ServiceProvider.GetRequiredService<FgcGamesContext>();
+            var senhaHasher = scope.ServiceProvider.GetRequiredService<ISenhaHasherService>();
 
             if (db.Database.IsRelational())
             {
-                db.Database.Migrate();
             }
         }
 
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.MapGamesEndpoints();
         app.MapCRUDExampleEndpoints();
+        app.MapAuthEndpoints();
+        app.MapUsuarioEndpoints();
+        app.MapJogoEndpoints();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using FgcGames.Api.Filters;
 using FgcGames.IoC;
+using Microsoft.OpenApi;
 
 namespace FgcGames.Api.Extensions;
 
@@ -9,9 +10,9 @@ public static class ConfigureServicesExtensions
     {
         services.AddAuthentication();
         services.AddAuthorization();
+        services.AuthnAuthzConfig();
 
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
 
         services.AddScoped(typeof(ValidationFilter<>));
         services.ConfigureAppDependencies(configuration);

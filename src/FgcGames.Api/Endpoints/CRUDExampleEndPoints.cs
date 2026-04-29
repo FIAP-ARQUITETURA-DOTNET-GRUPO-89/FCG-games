@@ -12,12 +12,12 @@ public static class CRUDExampleEndPoints
     public static void MapCRUDExampleEndpoints(this IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("/crud-example")
-                       .WithTags("CRUD Example");
 
         var taskGroup = group.MapGroup("/task-items");
 
         taskGroup.MapPost("/", CreateTask)
             .AddEndpointFilter<ValidationFilter<CreateTaskItemExampleCommand>>()
+            .RequireAuthorization("Admin")
             .WithSummary("Cria uma nova task")
             .WithDescription("Endpoint responsável por criar uma nova task.")
             .Produces<CreateTaskItemExampleResponse>(StatusCodes.Status201Created)
@@ -36,6 +36,7 @@ public static class CRUDExampleEndPoints
 
         taskGroup.MapPut("/{id:int}", UpdateTask)
             .AddEndpointFilter<ValidationFilter<UpdateTaskItemExampleCommand>>()
+            .RequireAuthorization("Admin")
             .WithSummary("Atualiza uma task")
             .WithDescription("Endpoint responsável por atualizar uma task existente.")
             .Produces(StatusCodes.Status204NoContent)
@@ -46,6 +47,7 @@ public static class CRUDExampleEndPoints
 
         taskGroup.MapDelete("/{id:int}", DeleteTask)
             .AddEndpointFilter<ValidationFilter<DeleteTaskItemExampleCommand>>()
+            .RequireAuthorization("Admin")
             .WithSummary("Remove uma task")
             .WithDescription("Endpoint responsável por deletar uma task existente.")
             .Produces(StatusCodes.Status204NoContent)
