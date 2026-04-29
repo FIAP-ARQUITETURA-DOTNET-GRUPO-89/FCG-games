@@ -23,21 +23,29 @@ public class IntegrationTestFixture : IAsyncLifetime
     {
         Environment.SetEnvironmentVariable("DOTNET_ENVIRONMENT", "Testing");
 
-        var builder = await DistributedApplicationTestingBuilder
-            .CreateAsync<Projects.FgcGames_AppHost>();
-
-        builder.Services.ConfigureHttpClientDefaults(client =>
+        try
         {
-            client.ConfigurePrimaryHttpMessageHandler(() =>
-                new HttpClientHandler
-                {
-                    ServerCertificateCustomValidationCallback =
-                        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-                });
-        });
+            var builder = await DistributedApplicationTestingBuilder
+                .CreateAsync<Projects.FgcGames_AppHost>();
 
-        App = await builder.BuildAsync();
-        await App.StartAsync();
+            builder.Services.ConfigureHttpClientDefaults(client =>
+            {
+                client.ConfigurePrimaryHttpMessageHandler(() =>
+                    new HttpClientHandler
+                    {
+                        ServerCertificateCustomValidationCallback =
+                            HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                    });
+            });
+
+            App = await builder.BuildAsync();
+            await App.StartAsync();
+        }
+        catch (Exception ex) when (IsContainerRuntimeUnavailable(ex))
+        {
+            Assert.Skip("Docker/Container runtime não disponível. Testes de integração foram ignorados.");
+            return;
+        }
 
         var connectionString = await App.GetConnectionStringAsync("Default") ?? throw new InvalidOperationException("Connection string não encontrada");
 
@@ -56,7 +64,11 @@ public class IntegrationTestFixture : IAsyncLifetime
     /// <summary>
     /// Finaliza a execução da aplicação após os testes.
     /// </summary>
-    public async ValueTask DisposeAsync() => await App.DisposeAsync();
+    public async ValueTask DisposeAsync()
+    {
+        if (App is not null)
+            await App.DisposeAsync();
+    }
 
     /// <summary>
     /// Cria um HttpClient configurado para comunicação com a API.
@@ -69,4 +81,9 @@ public class IntegrationTestFixture : IAsyncLifetime
     /// </summary>
     public Task ResetDatabaseAsync()
         => _dbManager.ResetAsync();
+
+    private static bool IsContainerRuntimeUnavailable(Exception exception)
+        => exception.ToString().Contains(
+            "Container runtime 'docker' could not be found",
+            StringComparison.OrdinalIgnoreCase);
 }

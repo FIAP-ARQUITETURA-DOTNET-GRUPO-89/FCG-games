@@ -5,6 +5,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+    <IsTestProject Condition="'$(RUN_INTEGRATION_TESTS)' == ''">false</IsTestProject>
+    <IsTestProject Condition="'$(RUN_INTEGRATION_TESTS)' != ''">true</IsTestProject>
   </PropertyGroup>
 
   <ItemGroup>

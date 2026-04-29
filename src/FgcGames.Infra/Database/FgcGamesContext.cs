@@ -8,6 +8,7 @@ public class FgcGamesContext(DbContextOptions<FgcGamesContext> options) : DbCont
     public DbSet<TaskItemExample> TaskItemExamples { get; set; }
 
     public DbSet<Usuario> Usuarios { get; set; }
+    public DbSet<Jogo> Jogos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

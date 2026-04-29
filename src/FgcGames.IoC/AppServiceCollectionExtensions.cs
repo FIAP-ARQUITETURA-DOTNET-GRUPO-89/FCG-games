@@ -36,6 +36,12 @@ public static class AppServiceCollectionExtensions
         services.AddScoped<IUpdateUserRoleHandler, UpdateUserRoleHandler>();
         services.AddScoped<IUpdatePasswordHandler, UpdatePasswordHandler>();
         services.AddScoped<IDeleteUserHandler, DeleteUserHandler>();
+        services.AddScoped<ICreateGameHandler, CreateGameHandler>();
+        services.AddScoped<IGetAllGamesHandler, GetAllGamesHandler>();
+        services.AddScoped<IGetGameByIdHandler, GetGameByIdHandler>();
+        services.AddScoped<IUpdateGameHandler, UpdateGameHandler>();
+        services.AddScoped<IUpdatePriceHandler, UpdatePriceHandler>();
+        services.AddScoped<IDeleteGameHandler, DeleteGameHandler>();
 
         services.AddScoped<ILoginHandler, LoginHandler>();
 
@@ -43,6 +49,8 @@ public static class AppServiceCollectionExtensions
         services.AddScoped<ITaskItemExampleRepository, TaskItemExampleRepository>();
 
         services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+        services.AddScoped<IGameRepository, JogoRepository>();
+        services.AddScoped<IJogoRepository, JogoRepository>();
 
         // Services
         services.AddScoped<ITokenService, TokenService>();
