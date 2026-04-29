@@ -13,4 +13,10 @@ public class UsuarioRepository(FgcGamesContext dbContext) : IUsuarioRepository
         => await _dbContext.Set<Usuario>()
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Email.Endereco.ToLower() == email.ToLower());
+
+    public async Task<bool> ExistsByEmailAsync(string email)
+    {
+        return await _dbContext.Set<Usuario>()
+            .AnyAsync(u => u.Email.Endereco.ToLower() == email.ToLower());
+    }
 }

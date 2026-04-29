@@ -2,7 +2,7 @@
 
 namespace FgcGames.Domain.Interfaces.Repositories;
 
-public interface IUsuarioRepository
+public interface IUsuarioRepository : IBaseRepository<Usuario>
 {
     /// <summary>
     /// Obtém um usuário a partir do e-mail informado.
@@ -10,4 +10,5 @@ public interface IUsuarioRepository
     /// <param name="email">E-mail do usuário.</param>
     /// <returns>Usuário encontrado ou null caso não exista.</returns>
     Task<Usuario?> ObterPorEmailAsync(string email);
+    Task<bool> ExistsByEmailAsync(string email);
 }
