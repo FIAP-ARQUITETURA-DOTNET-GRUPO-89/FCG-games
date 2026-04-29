@@ -3,5 +3,5 @@
 public record GetUsersByNameResponse(
     Guid Id,
     string Nome,
-    DateTime DataNascimento
+    DateOnly DataNascimento
 );

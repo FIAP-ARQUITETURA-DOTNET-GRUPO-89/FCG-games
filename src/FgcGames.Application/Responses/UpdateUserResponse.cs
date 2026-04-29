@@ -1,3 +1,3 @@
 ﻿namespace FgcGames.Application.Responses;
 
-public record UpdateUserResponse(Guid Id, string Nome, DateTime DataNascimento, string Mensagem);
+public record UpdateUserResponse(Guid Id, string Nome, DateOnly DataNascimento, string Mensagem);

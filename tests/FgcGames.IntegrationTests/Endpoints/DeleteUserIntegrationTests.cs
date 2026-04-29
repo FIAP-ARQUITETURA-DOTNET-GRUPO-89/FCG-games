@@ -25,7 +25,7 @@ public class DeleteUserIntegrationTests(IntegrationTestFixture fixture) : IClass
 
             var usuario = new Usuario(
                 "Usuario Comum",
-                new DateTime(1990, 1, 1),
+                new DateOnly(1990, 1, 1),
                 Email.Create("delete@teste.com"),
                 Senha.FromHash("Senha@123"),
                 UserRole.User

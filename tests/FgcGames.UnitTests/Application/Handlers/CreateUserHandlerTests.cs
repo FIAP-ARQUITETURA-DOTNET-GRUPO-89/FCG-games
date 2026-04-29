@@ -24,7 +24,7 @@ public class CreateUserHandlerTests
     [Fact]
     public async Task Dado_EmailNaoExistente_Quando_CriarUsuario_Entao_DeveCriarComSucesso()
     {
-        var command = new CreateUserCommand("Jonatas", "jonatas@email.com", new DateTime(1990, 1, 1), "Senha@123");
+        var command = new CreateUserCommand("Jonatas", "jonatas@email.com", new DateOnly(1990, 1, 1), "Senha@123");
 
         _repository.ExistsByEmailAsync(command.Email).Returns(false);
 
@@ -50,7 +50,7 @@ public class CreateUserHandlerTests
     [Fact]
     public async Task Dado_EmailJaExistente_Quando_CriarUsuario_Entao_DeveLancarAlreadyExistsException()
     {
-        var command = new CreateUserCommand("Jonatas", "jonatas@email.com", new DateTime(1990, 1, 1), "Senha@123");
+        var command = new CreateUserCommand("Jonatas", "jonatas@email.com", new DateOnly(1990, 1, 1), "Senha@123");
 
         _repository.ExistsByEmailAsync(command.Email).Returns(true);
 

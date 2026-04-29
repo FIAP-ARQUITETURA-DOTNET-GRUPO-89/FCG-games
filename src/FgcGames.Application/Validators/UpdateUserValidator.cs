@@ -15,7 +15,12 @@ public class UpdateUserValidator : AbstractValidator<UpdateUserCommand>
 
         RuleFor(a => a.DataNascimento)
             .NotEmpty().WithMessage("A data de nascimento é obrigatória.")
-            .LessThan(DateTime.Today).WithMessage("A data de nascimento deve ser no passado.");
+            .Must(d => d < DateOnly.FromDateTime(DateTime.Today))
+            .WithMessage("A data de nascimento deve ser no passado.");
+
+        //RuleFor(a => a.DataNascimento)
+        //    .NotEmpty().WithMessage("A data de nascimento é obrigatória.")
+        //    .LessThan(DateTime.Today).WithMessage("A data de nascimento deve ser no passado.");
 
         //RuleFor(a => a.Email)
         //    .NotEmpty()

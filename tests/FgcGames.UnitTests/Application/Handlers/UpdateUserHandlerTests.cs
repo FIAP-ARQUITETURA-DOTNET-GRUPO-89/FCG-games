@@ -26,7 +26,7 @@ public class UpdateUserHandlerTests
     public async Task Dado_UsuarioExistente_Quando_AtualizarPerfil_Entao_DeveAtualizarComSucesso()
     {
         var usuario = CriarUsuario();
-        var command = new UpdateUserCommand(usuario.Id, "Novo Nome", new DateTime(1995, 1, 1));
+        var command = new UpdateUserCommand(usuario.Id, "Novo Nome", new DateOnly(1995, 1, 1));
 
         _repository.GetByIdAsync(command.Id).Returns(usuario);
 
@@ -44,7 +44,7 @@ public class UpdateUserHandlerTests
     [Fact]
     public async Task Dado_UsuarioInexistente_Quando_AtualizarPerfil_Entao_DeveLancarException()
     {
-        var command = new UpdateUserCommand(Guid.NewGuid(), "Novo Nome", new DateTime(1995, 1, 1));
+        var command = new UpdateUserCommand(Guid.NewGuid(), "Novo Nome", new DateOnly(1995, 1, 1));
 
         _repository.GetByIdAsync(command.Id).Returns((Usuario?)null);
 
@@ -61,7 +61,7 @@ public class UpdateUserHandlerTests
     public async Task Dado_NomeInvalido_Quando_AtualizarPerfil_Entao_DeveLancarArgumentException()
     {
         var usuario = CriarUsuario();
-        var command = new UpdateUserCommand(usuario.Id, "", new DateTime(1995, 1, 1));
+        var command = new UpdateUserCommand(usuario.Id, "", new DateOnly(1995, 1, 1));
 
         _repository.GetByIdAsync(command.Id).Returns(usuario);
 
@@ -72,5 +72,5 @@ public class UpdateUserHandlerTests
     }
 
     private static Usuario CriarUsuario()
-        => new("Nome", new DateTime(1990, 1, 1), Email.Create("user@email.com"), Senha.FromHash("Senha@123"), UserRole.User);
+        => new("Nome", new DateOnly(1990, 1, 1), Email.Create("user@email.com"), Senha.FromHash("Senha@123"), UserRole.User);
 }
