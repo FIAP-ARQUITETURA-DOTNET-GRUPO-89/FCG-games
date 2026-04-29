@@ -45,8 +45,8 @@ public class CreateUserIntegrationTests(IntegrationTestFixture fixture) : IClass
             usuarioDb.Nome.ShouldBe(command.Nome);
             usuarioDb.Role.ShouldBe(UserRole.User);
             usuarioDb.Inativo.ShouldBeFalse();
-            usuarioDb.Senha.Password.ShouldNotBe(command.Senha);
-        });
+            usuarioDb.Senha.Hash.ShouldNotBe(command.Senha);
+        }); 
     }
 
     [Fact]
@@ -63,7 +63,7 @@ public class CreateUserIntegrationTests(IntegrationTestFixture fixture) : IClass
                 "Usuario Ja Existente",
                 new DateTime(1990, 1, 1),
                 Email.Create(emailRepetido),
-                Senha.Create("SenhaForte@123"),
+                Senha.FromHash("SenhaForte@123"),
                 UserRole.User
             );
 

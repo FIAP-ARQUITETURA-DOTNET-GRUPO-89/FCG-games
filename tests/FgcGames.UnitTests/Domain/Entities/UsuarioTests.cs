@@ -13,7 +13,7 @@ public class UsuarioTests
         var nome = "Jonatas";
         var dataNascimento = new DateTime(1990, 1, 1);
         var email = Email.Create("jonatas@email.com");
-        var senha = Senha.Create("12345678");
+        var senha = Senha.FromHash("12345678");
 
         var usuario = new Usuario(nome, dataNascimento, email, senha, UserRole.User);
 
@@ -33,7 +33,7 @@ public class UsuarioTests
             "Nome Antigo",
             new DateTime(1990, 1, 1),
             Email.Create("user@email.com"),
-            Senha.Create("12345678"),
+            Senha.FromHash("12345678"),
             UserRole.User);
 
         var novoNome = "Nome Novo";
@@ -52,7 +52,7 @@ public class UsuarioTests
             "Nome",
             new DateTime(1990, 1, 1),
             Email.Create("user@email.com"),
-            Senha.Create("12345678"),
+            Senha.FromHash("12345678"),
             UserRole.User);
 
         var exception = Should.Throw<ArgumentException>(() => usuario.AtualizarPerfil("", new DateTime(1995, 1, 1)));
@@ -67,7 +67,7 @@ public class UsuarioTests
             "Nome",
             new DateTime(1990, 1, 1),
             Email.Create("user@email.com"),
-            Senha.Create("12345678"),
+            Senha.FromHash("12345678"),
             UserRole.User);
 
         var dataFutura = DateTime.Now.AddDays(1);
@@ -84,10 +84,10 @@ public class UsuarioTests
             "Nome",
             new DateTime(1990, 1, 1),
             Email.Create("user@email.com"),
-            Senha.Create("12345678"),
+            Senha.FromHash("12345678"),
             UserRole.User);
 
-        var novaSenha = Senha.Create("87654321");
+        var novaSenha = Senha.FromHash("87654321");
 
         usuario.AlterarSenha(novaSenha);
 
@@ -101,7 +101,7 @@ public class UsuarioTests
             "Nome",
             new DateTime(1990, 1, 1),
             Email.Create("user@email.com"),
-            Senha.Create("12345678"),
+            Senha.FromHash("12345678"),
             UserRole.User);
 
         usuario.Inativar();
@@ -116,7 +116,7 @@ public class UsuarioTests
             "Admin",
             new DateTime(1990, 1, 1),
             Email.Create("admin@email.com"),
-            Senha.Create("12345678"),
+            Senha.FromHash("12345678"),
             UserRole.Admin);
 
         var ehAdmin = usuario.EhAdmin();
@@ -131,7 +131,7 @@ public class UsuarioTests
             "User",
             new DateTime(1990, 1, 1),
             Email.Create("user@email.com"),
-            Senha.Create("12345678"),
+            Senha.FromHash("12345678"),
             UserRole.User);
 
         var ehAdmin = usuario.EhAdmin();

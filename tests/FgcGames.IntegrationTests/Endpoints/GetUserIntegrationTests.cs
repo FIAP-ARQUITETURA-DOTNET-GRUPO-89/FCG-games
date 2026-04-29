@@ -25,16 +25,16 @@ public class GetUserIntegrationTests(IntegrationTestFixture fixture) : IClassFix
 
             var usuarios = new List<Usuario>
             {
-                new Usuario("Alice Silva", new DateTime(1990, 5, 10), Email.Create("alice@email.com"), Senha.Create("Senha@123"), UserRole.User),
-                new Usuario("Bruno Silva", new DateTime(1985, 3, 20), Email.Create("bruno@email.com"), Senha.Create("Senha@123"), UserRole.User),
-                new Usuario("Carlos Oliveira", new DateTime(2000, 1, 1), Email.Create("carlos@email.com"), Senha.Create("Senha@123"), UserRole.User)
+                new Usuario("Alice Silva", new DateTime(1990, 5, 10), Email.Create("alice@email.com"), Senha.FromHash("Senha@123"), UserRole.User),
+                new Usuario("Bruno Silva", new DateTime(1985, 3, 20), Email.Create("bruno@email.com"), Senha.FromHash("Senha@123"), UserRole.User),
+                new Usuario("Carlos Oliveira", new DateTime(2000, 1, 1), Email.Create("carlos@email.com"), Senha.FromHash("Senha@123"), UserRole.User)
             };
 
             await context.Usuarios.AddRangeAsync(usuarios);
             await context.SaveChangesAsync();
         });
 
-        var url = $"/usuarios/users?nome={termoBusca}&pagina=1&tamanhoPagina=10";
+        var url = $"/usuarios?nome={termoBusca}&pagina=1&tamanhoPagina=10";
 
         // ACT
         var response = await _client.GetAsync(url, cancellationToken: TestContext.Current.CancellationToken);
@@ -65,7 +65,7 @@ public class GetUserIntegrationTests(IntegrationTestFixture fixture) : IClassFix
                 nomeInativo,
                 new DateTime(1992, 8, 15),
                 Email.Create("daniel@email.com"),
-                Senha.Create("Senha@123"),
+                Senha.FromHash("Senha@123"),
                 UserRole.User
             );
 
@@ -77,7 +77,7 @@ public class GetUserIntegrationTests(IntegrationTestFixture fixture) : IClassFix
         });
 
         // ACT
-        var response = await _client.GetAsync($"/usuarios/users?nome={nomeInativo}&pagina=1&tamanhoPagina=10", TestContext.Current.CancellationToken);
+        var response = await _client.GetAsync($"/usuarios?nome={nomeInativo}&pagina=1&tamanhoPagina=10", TestContext.Current.CancellationToken);
 
         // ASSERT
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -101,7 +101,7 @@ public class GetUserIntegrationTests(IntegrationTestFixture fixture) : IClassFix
                 "João Silva",
                 new DateTime(1990, 1, 1),
                 Email.Create("joao@teste.com"),
-                Senha.Create("Senha@123"),
+                Senha.FromHash("Senha@123"),
                 UserRole.User
             );
 
@@ -110,7 +110,7 @@ public class GetUserIntegrationTests(IntegrationTestFixture fixture) : IClassFix
         });
 
         // ACT
-        var response = await _client.GetAsync("/usuarios/users?nome=&pagina=1&tamanhoPagina=10", TestContext.Current.CancellationToken);
+        var response = await _client.GetAsync("/usuarios?nome=&pagina=1&tamanhoPagina=10", TestContext.Current.CancellationToken);
 
         // ASSERT
         response.StatusCode.ShouldBe(HttpStatusCode.OK);

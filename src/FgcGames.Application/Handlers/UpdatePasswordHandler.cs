@@ -24,11 +24,8 @@ public class UpdatePasswordHandler(ILogger<UpdatePasswordHandler> logger, IUsuar
 
         try
         {
-            Senha.Create(command.Password);
-
             var senhaHash = BCrypt.Net.BCrypt.HashPassword(command.Password);
-
-            var novaSenha = new Senha(senhaHash);
+            var novaSenha = Senha.FromHash(senhaHash);
 
             user.AlterarSenha(novaSenha);
 

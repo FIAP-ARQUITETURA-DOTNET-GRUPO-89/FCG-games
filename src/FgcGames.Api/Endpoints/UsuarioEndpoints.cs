@@ -52,7 +52,7 @@ public static class UsuarioEndpoints
             .Produces(StatusCodes.Status409Conflict)
             .Produces(StatusCodes.Status500InternalServerError);
 
-        group.MapPut("/{id:Guid}/password", UpdatePassword)
+        group.MapPatch("/{id:Guid}/password", UpdatePassword)
             .AddEndpointFilter<ValidationFilter<UpdatePasswordCommand>>()
             .WithSummary("Atualiza a senha de um usuário")
             .WithDescription("Endpoint responsável por atualizar a senha de um usuário existente.")

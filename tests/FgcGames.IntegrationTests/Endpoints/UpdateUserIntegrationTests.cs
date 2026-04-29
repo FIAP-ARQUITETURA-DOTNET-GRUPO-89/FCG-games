@@ -21,7 +21,7 @@ public class UpdateUserIntegrationTests(IntegrationTestFixture fixture) : IClass
         var userId = Guid.Empty;
         await fixture.ExecuteDbContextAsync(async (context) =>
         {
-            var usuario = new Usuario("Nome Antigo", new DateTime(1990, 1, 1), Email.Create("perfil@teste.com"), Senha.Create("Senha@123"), UserRole.User);
+            var usuario = new Usuario("Nome Antigo", new DateTime(1990, 1, 1), Email.Create("perfil@teste.com"), Senha.FromHash("Senha@123"), UserRole.User);
             context.Usuarios.Add(usuario);
             await context.SaveChangesAsync();
             userId = usuario.Id;
@@ -70,7 +70,7 @@ public class UpdateUserIntegrationTests(IntegrationTestFixture fixture) : IClass
         var userId = Guid.Empty;
         await fixture.ExecuteDbContextAsync(async (context) =>
         {
-            var usuario = new Usuario("User Role", new DateTime(1990, 1, 1), Email.Create("role@teste.com"), Senha.Create("Senha@123"), UserRole.User);
+            var usuario = new Usuario("User Role", new DateTime(1990, 1, 1), Email.Create("role@teste.com"), Senha.FromHash("Senha@123"), UserRole.User);
             context.Usuarios.Add(usuario);
             await context.SaveChangesAsync();
             userId = usuario.Id;
@@ -100,7 +100,7 @@ public class UpdateUserIntegrationTests(IntegrationTestFixture fixture) : IClass
         var userId = Guid.Empty;
         await fixture.ExecuteDbContextAsync(async (context) =>
         {
-            var usuario = new Usuario("User Senha", new DateTime(1990, 1, 1), Email.Create("senha@teste.com"), Senha.Create("SenhaAntiga@123"), UserRole.User);
+            var usuario = new Usuario("User Senha", new DateTime(1990, 1, 1), Email.Create("senha@teste.com"), Senha.FromHash("SenhaAntiga@123"), UserRole.User);
             context.Usuarios.Add(usuario);
             await context.SaveChangesAsync();
             userId = usuario.Id;
@@ -119,8 +119,8 @@ public class UpdateUserIntegrationTests(IntegrationTestFixture fixture) : IClass
         {
             var userDb = await context.Usuarios.FindAsync(userId);
             userDb.ShouldNotBeNull();
-            userDb.Senha.Password.ShouldNotBe(novaSenhaRaw);
-            BCrypt.Net.BCrypt.Verify(novaSenhaRaw, userDb.Senha.Password).ShouldBeTrue();
+            userDb.Senha.Hash.ShouldNotBe(novaSenhaRaw);
+            BCrypt.Net.BCrypt.Verify(novaSenhaRaw, userDb.Senha.Hash).ShouldBeTrue();
         });
     }
 
@@ -131,7 +131,7 @@ public class UpdateUserIntegrationTests(IntegrationTestFixture fixture) : IClass
         var userId = Guid.Empty;
         await fixture.ExecuteDbContextAsync(async (context) =>
         {
-            var usuario = new Usuario("User Senha Curta", new DateTime(1990, 1, 1), Email.Create("short@teste.com"), Senha.Create("Senha@123"), UserRole.User);
+            var usuario = new Usuario("User Senha Curta", new DateTime(1990, 1, 1), Email.Create("short@teste.com"), Senha.FromHash("Senha@123"), UserRole.User);
             context.Usuarios.Add(usuario);
             await context.SaveChangesAsync();
             userId = usuario.Id;

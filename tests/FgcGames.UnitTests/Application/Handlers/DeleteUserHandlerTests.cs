@@ -56,5 +56,5 @@ public class DeleteUserHandlerTests
     }
 
     private static Usuario CriarUsuario()
-        => new("Nome", new DateTime(1990, 1, 1), Email.Create("user@email.com"), Senha.Create("Senha@123"), UserRole.User);
+        => new("Nome", new DateTime(1990, 1, 1), Email.Create("user@email.com"), Senha.FromHash("Senha@123"), UserRole.User);
 }

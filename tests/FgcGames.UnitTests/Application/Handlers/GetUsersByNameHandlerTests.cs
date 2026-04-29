@@ -62,5 +62,5 @@ public class GetUsersByNameHandlerTests
     }
 
     private static Usuario CriarUsuario(string nome)
-        => new(nome, new DateTime(1990, 1, 1), Email.Create($"{nome.ToLower()}@email.com"), Senha.Create("Senha@123"), UserRole.User);
+        => new(nome, new DateTime(1990, 1, 1), Email.Create($"{nome.ToLower()}@email.com"), Senha.FromHash("Senha@123"), UserRole.User);
 }
