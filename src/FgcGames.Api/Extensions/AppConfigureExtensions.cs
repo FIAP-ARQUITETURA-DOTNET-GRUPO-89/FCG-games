@@ -2,13 +2,13 @@
 using FgcGames.Api.Middlewares;
 using FgcGames.Application.Interfaces;
 using FgcGames.Infra.Database;
-using FgcGames.Infra.Seed;
 using Microsoft.EntityFrameworkCore;
 
 namespace FgcGames.Api.Extensions;
 
 public static class AppConfigureExtensions
 {
+    public static void Configure(this WebApplication app)
     {
         app.UseMiddleware<ExceptionMiddleware>();
         app.UseHttpsRedirection();

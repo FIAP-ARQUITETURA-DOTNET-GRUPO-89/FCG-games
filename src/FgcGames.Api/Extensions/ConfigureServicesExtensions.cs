@@ -1,6 +1,5 @@
 ﻿using FgcGames.Api.Filters;
 using FgcGames.IoC;
-using Microsoft.OpenApi;
 
 namespace FgcGames.Api.Extensions;
 

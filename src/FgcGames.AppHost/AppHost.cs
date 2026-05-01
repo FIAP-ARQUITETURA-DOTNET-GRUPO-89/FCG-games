@@ -1,7 +1,8 @@
-﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Hosting;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
+var postgres = builder.Environment.IsDevelopment()
     ? builder.AddPostgres("Postgres")
         .WithLifetime(ContainerLifetime.Session)
         .AddDatabase("Default", "fgcgames-db")

@@ -1,4 +1,4 @@
-﻿using Aspire.Hosting;
+using Aspire.Hosting;
 using Aspire.Hosting.Testing;
 using FgcGames.Infra.Database;
 using FgcGames.IntegrationTests.TestHelpers;
@@ -14,7 +14,6 @@ namespace FgcGames.IntegrationTests.Fixtures;
 public class IntegrationTestFixture : IAsyncLifetime
 {
     public DistributedApplication App { get; private set; } = default!;
-    public HttpClient HttpClient { get; private set; } = default!;
 
     private TestDatabaseManager _dbManager = default!;
     private string _connectionString = string.Empty;
@@ -45,10 +44,31 @@ public class IntegrationTestFixture : IAsyncLifetime
         App = await builder.BuildAsync();
         await App.StartAsync();
 
-
-    {
-
-    {
+        _connectionString = await App.GetConnectionStringAsync("Default") ?? string.Empty;
+        _dbManager = new TestDatabaseManager(_connectionString);
+        await _dbManager.InitializeAsync();
     }
 
+    public async ValueTask DisposeAsync()
+    {
+        _httpClient?.Dispose();
+        await App.DisposeAsync();
+    }
+
+    public async Task ResetDatabaseAsync()
+        => await _dbManager.ResetAsync();
+
+    public HttpClient CreateClient()
+        => App.CreateHttpClient("fgcgames-api");
+
+    public async Task ExecuteDbContextAsync(Func<FgcGamesContext, Task> action)
+    {
+        var options = new DbContextOptionsBuilder<FgcGamesContext>()
+            .UseNpgsql(_connectionString)
+            .Options;
+
+        await using var context = new FgcGamesContext(options);
+        await action(context);
+        await context.SaveChangesAsync();
+    }
 }

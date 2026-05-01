@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Net.Http.Json;
 using FgcGames.Application.Responses;
 using FgcGames.IntegrationTests.Fixtures;
@@ -7,7 +7,9 @@ using Shouldly;
 
 namespace FgcGames.IntegrationTests.Endpoints;
 
+public class CRUDExampleIntegrationTests(IntegrationTestFixture fixture) : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
 {
+    private readonly IntegrationTestFixture _fixture = fixture;
 
     public async ValueTask InitializeAsync() => await _fixture.ResetDatabaseAsync();
 
@@ -22,8 +24,12 @@ namespace FgcGames.IntegrationTests.Endpoints;
         var request = new { title = $"Task {Guid.NewGuid()}" };
 
         // Act
+        var response = await client.PostAsJsonAsync(
             "/crud-example/task-items",
             request,
+            TestContext.Current.CancellationToken);
+
+        var result = await response.ReadContentAsync<CreateTaskItemExampleResponse>(
             TestContext.Current.CancellationToken);
 
         // Assert
@@ -44,6 +50,10 @@ namespace FgcGames.IntegrationTests.Endpoints;
         var request = new { title = "" };
 
         // Act
+        var response = await client.PostAsJsonAsync(
+            "/crud-example/task-items",
+            request,
+            TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
@@ -62,6 +72,10 @@ namespace FgcGames.IntegrationTests.Endpoints;
         var request = new { title = new string('a', 101) };
 
         // Act
+        var response = await client.PostAsJsonAsync(
+            "/crud-example/task-items",
+            request,
+            TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
@@ -81,6 +95,7 @@ namespace FgcGames.IntegrationTests.Endpoints;
 
         var request = new { title };
 
+        var first = await client.PostAsJsonAsync(
             "/crud-example/task-items",
             request,
             TestContext.Current.CancellationToken);
@@ -88,6 +103,7 @@ namespace FgcGames.IntegrationTests.Endpoints;
         first.StatusCode.ShouldBe(HttpStatusCode.Created);
 
         // Act
+        var second = await client.PostAsJsonAsync(
             "/crud-example/task-items",
             request,
             TestContext.Current.CancellationToken);
@@ -104,7 +120,7 @@ namespace FgcGames.IntegrationTests.Endpoints;
     [Fact]
     public async Task Dado_SemToken_Quando_CriarTask_Entao_Retorna401()
     {
-        // Arrange 
+        // Arrange
         var client = TestAuthHelper.CreateAnonymousClient(_fixture);
 
         var request = new { title = "Task sem auth" };
