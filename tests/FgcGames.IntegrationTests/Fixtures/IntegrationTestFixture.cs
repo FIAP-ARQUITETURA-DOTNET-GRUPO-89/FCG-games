@@ -1,4 +1,4 @@
-using Aspire.Hosting;
+﻿using Aspire.Hosting;
 using Aspire.Hosting.Testing;
 using FgcGames.Infra.Database;
 using FgcGames.IntegrationTests.TestHelpers;
@@ -52,7 +52,11 @@ public class IntegrationTestFixture : IAsyncLifetime
     public async ValueTask DisposeAsync()
     {
         _httpClient?.Dispose();
-        await App.DisposeAsync();
+        if (App is not null)
+        {
+            await App.StopAsync();
+            await App.DisposeAsync();
+        }
     }
 
     public async Task ResetDatabaseAsync()

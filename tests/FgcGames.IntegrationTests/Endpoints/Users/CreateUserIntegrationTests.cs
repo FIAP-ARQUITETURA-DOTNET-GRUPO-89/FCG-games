@@ -9,7 +9,7 @@ using FgcGames.Domain.Enum;
 using Microsoft.EntityFrameworkCore;
 using Shouldly;
 
-namespace FgcGames.IntegrationTests.Endpoints;
+namespace FgcGames.IntegrationTests.Endpoints.Users;
 
 public class CreateUserIntegrationTests(IntegrationTestFixture fixture) : IClassFixture<IntegrationTestFixture>
 {
@@ -23,7 +23,7 @@ public class CreateUserIntegrationTests(IntegrationTestFixture fixture) : IClass
             "Novo Usuario Teste",
             "novo.item@gmail.com",
             new DateOnly(1998, 5, 12),
-            "SenhaForte123"
+            "Senha12!"
         );
 
         // ACT
@@ -43,8 +43,8 @@ public class CreateUserIntegrationTests(IntegrationTestFixture fixture) : IClass
 
             usuarioDb.ShouldNotBeNull();
             usuarioDb.Nome.ShouldBe(command.Nome);
-            //usuarioDb.Role.ShouldBe(UserRole.User);
-            //usuarioDb.Inativo.ShouldBeFalse();
+            usuarioDb.Role.ShouldBe(UserRole.User);
+            usuarioDb.Inativo.ShouldBeFalse();
             usuarioDb.Senha.Hash.ShouldNotBe(command.Senha);
         }); 
     }

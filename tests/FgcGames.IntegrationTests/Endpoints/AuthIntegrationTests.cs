@@ -183,6 +183,6 @@ public class AuthIntegrationTests(IntegrationTestFixture fixture) : IClassFixtur
         errors.ShouldContainKey("Senha");
 
         errors["Email"].ShouldContain("'Email' deve ser informado.");
-        errors["Senha"].ShouldContain("'Senha' deve ser informado.");
+        errors["Senha"].ShouldContain("'Senha' deve ser informada.");
     }
 }

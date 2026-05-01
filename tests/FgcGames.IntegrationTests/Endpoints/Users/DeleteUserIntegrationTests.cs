@@ -7,7 +7,7 @@ using FgcGames.Domain.ValueObjects;
 using FgcGames.IntegrationTests.Fixtures;
 using Shouldly;
 
-namespace FgcGames.IntegrationTests.Endpoints;
+namespace FgcGames.IntegrationTests.Endpoints.Users;
 
 public class DeleteUserIntegrationTests(IntegrationTestFixture fixture) : IClassFixture<IntegrationTestFixture>
 {

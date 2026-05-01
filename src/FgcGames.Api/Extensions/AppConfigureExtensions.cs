@@ -37,7 +37,6 @@ public static class AppConfigureExtensions
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.MapCRUDExampleEndpoints();
         app.MapAuthEndpoints();
         app.MapUsuarioEndpoints();
         app.MapJogoEndpoints();

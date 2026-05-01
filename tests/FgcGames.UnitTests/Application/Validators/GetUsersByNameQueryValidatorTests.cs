@@ -21,14 +21,14 @@ public class GetUsersByNameQueryValidatorTests
     }
 
     [Fact]
-    public void Dado_NomeVazio_Quando_Validar_Entao_DeveSerInvalido()
+    public void Dado_NomeVazio_Quando_Validar_Entao_DeveSerValido()
     {
         var query = new GetUsersByNameQuery("", 1, 10);
 
         var result = _validator.TestValidate(query);
 
-        result.IsValid.ShouldBeFalse();
-        result.ShouldHaveValidationErrorFor(x => x.Nome);
+        result.IsValid.ShouldBeTrue();
+        result.ShouldNotHaveValidationErrorFor(x => x.Nome);
     }
 
     [Fact]

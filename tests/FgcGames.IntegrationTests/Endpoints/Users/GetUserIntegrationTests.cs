@@ -7,7 +7,7 @@ using FgcGames.Domain.Enum;
 using FgcGames.IntegrationTests.Fixtures;
 using Shouldly;
 
-namespace FgcGames.IntegrationTests.Endpoints;
+namespace FgcGames.IntegrationTests.Endpoints.Users;
 
 public class GetUserIntegrationTests(IntegrationTestFixture fixture) : IClassFixture<IntegrationTestFixture>
 {

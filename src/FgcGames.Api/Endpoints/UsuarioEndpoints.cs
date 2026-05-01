@@ -13,7 +13,6 @@ public static class UsuarioEndpoints
     {
         var group = app.MapGroup("/usuarios").WithTags("Usuarios");
 
-
         group.MapPost("/", CreateUser)
             .AddEndpointFilter<ValidationFilter<CreateUserCommand>>()
             .WithSummary("Cria um novo usuário")
@@ -36,6 +35,7 @@ public static class UsuarioEndpoints
             .AddEndpointFilter<ValidationFilter<UpdateUserCommand>>()
             .WithSummary("Atualiza um usuário")
             .WithDescription("Endpoint responsável por atualizar um usuário existente.")
+            .Produces<UpdateUserResponse>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status204NoContent)
             .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status404NotFound)
@@ -46,6 +46,7 @@ public static class UsuarioEndpoints
             .AddEndpointFilter<ValidationFilter<UpdateUserRoleCommand>>()
             .WithSummary("Atualiza a role de um usuário")
             .WithDescription("Endpoint responsável por atualizar a role de um usuário existente.")
+            .Produces<UpdateUserResponse>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status204NoContent)
             .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status404NotFound)
@@ -57,6 +58,7 @@ public static class UsuarioEndpoints
             .WithSummary("Atualiza a senha de um usuário")
             .WithDescription("Endpoint responsável por atualizar a senha de um usuário existente.")
             .Produces(StatusCodes.Status204NoContent)
+            .Produces<UpdatePasswordResponse>(StatusCodes.Status200OK)
             .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status409Conflict)
@@ -69,6 +71,7 @@ public static class UsuarioEndpoints
             .Produces(StatusCodes.Status204NoContent)
             .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status404NotFound)
+            .Produces<DeleteUserResponse>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status500InternalServerError);
     }
 
@@ -86,25 +89,25 @@ public static class UsuarioEndpoints
 
     private static async Task<IResult> UpdateUser(Guid id, UpdateUserCommand command, [FromServices] IUpdateUserHandler handler)
     {
-        await handler.Handle(command);
-        return Results.NoContent();
+        var result = await handler.Handle(command);
+        return Results.Ok(result);
     }
 
     private static async Task<IResult> UpdateUserRole(Guid id, UpdateUserRoleCommand command, [FromServices] IUpdateUserRoleHandler handler)
     {
-        await handler.Handle(command);
-        return Results.NoContent();
+        var result = await handler.Handle(command);
+        return Results.Ok(result);
     }
 
     private static async Task<IResult> UpdatePassword(Guid id, UpdatePasswordCommand command, [FromServices] IUpdatePasswordHandler handler)
     {
-        await handler.Handle(command);
-        return Results.NoContent();
+        var result = await handler.Handle(command with { Id = id });
+        return Results.Ok(result);
     }
 
     private static async Task<IResult> DeleteUser([AsParameters] DeleteUserCommand command, [FromServices] IDeleteUserHandler handler)
     {
-        await handler.Handle(command);
-        return Results.NoContent();
+        var result = await handler.Handle(command);
+        return Results.Ok(result);
     }
 }

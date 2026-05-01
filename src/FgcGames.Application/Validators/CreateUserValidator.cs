@@ -11,9 +11,6 @@ public class CreateUserValidator : AbstractValidator<CreateUserCommand>
             .MaximumLength(100).WithMessage("O nome deve ter no máximo 100 caracteres.")
             .Matches(@"^[a-zA-ZÀ-ÿ\s]+$").WithMessage("O nome deve conter apenas letras.");
 
-        //RuleFor(a => a.DataNascimento)
-        //    .NotEmpty().WithMessage("A data de nascimento é obrigatória.")
-        //    .LessThan(DateTime.Today).WithMessage("A data de nascimento deve ser no passado.");
         RuleFor(a => a.DataNascimento)
             .NotEmpty().WithMessage("A data de nascimento é obrigatória.")
             .Must(d => d < DateOnly.FromDateTime(DateTime.Today))

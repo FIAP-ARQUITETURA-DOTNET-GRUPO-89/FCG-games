@@ -24,6 +24,8 @@ public class UpdatePasswordHandler(ILogger<UpdatePasswordHandler> logger, IUsuar
 
         try
         {
+            Senha.ValidarTextoPuro(command.Password);
+
             var senhaHash = BCrypt.Net.BCrypt.HashPassword(command.Password);
             var novaSenha = Senha.FromHash(senhaHash);
 

@@ -26,10 +26,6 @@ public static class AppServiceCollectionExtensions
         services.AddDbContext<FgcGamesContext>(options => options.UseNpgsql(configuration.GetConnectionString("Default")));
 
         // Handlers
-        services.AddScoped<ICreateTaskItemExampleHandler, CreateTaskItemExampleHandler>();
-        services.AddScoped<IGetTaskItemByIdHandler, GetTaskItemByIdExampleHandler>();
-        services.AddScoped<IUpdateTaskItemExampleHandler, UpdateTaskItemExampleHandler>();
-        services.AddScoped<IDeleteTaskItemExampleHandler, DeleteTaskItemExampleHandler>();
         services.AddScoped<IGetUsersByNameHandler, GetUsersByNameHandler>();
         services.AddScoped<ICreateUserHandler, CreateUserHandler>();
         services.AddScoped<IUpdateUserHandler, UpdateUserHandler>();
@@ -40,8 +36,6 @@ public static class AppServiceCollectionExtensions
         services.AddScoped<ILoginHandler, LoginHandler>();
 
         // Repositories
-        services.AddScoped<ITaskItemExampleRepository, TaskItemExampleRepository>();
-
         services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
         // Services

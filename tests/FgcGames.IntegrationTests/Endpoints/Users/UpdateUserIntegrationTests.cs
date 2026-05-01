@@ -8,7 +8,7 @@ using FgcGames.Domain.ValueObjects;
 using FgcGames.IntegrationTests.Fixtures;
 using Shouldly;
 
-namespace FgcGames.IntegrationTests.Endpoints;
+namespace FgcGames.IntegrationTests.Endpoints.Users;
 
 public class UpdateUserIntegrationTests(IntegrationTestFixture fixture) : IClassFixture<IntegrationTestFixture>
 {
@@ -100,13 +100,13 @@ public class UpdateUserIntegrationTests(IntegrationTestFixture fixture) : IClass
         var userId = Guid.Empty;
         await fixture.ExecuteDbContextAsync(async (context) =>
         {
-            var usuario = new Usuario("User Senha", new DateOnly(1990, 1, 1), Email.Create("senha@teste.com"), Senha.FromHash("SenhaAntiga@123"), UserRole.User);
+            var usuario = new Usuario("User Senha", new DateOnly(1990, 1, 1), Email.Create("senha@teste.com"), Senha.FromHash("Senha01@"), UserRole.User);
             context.Usuarios.Add(usuario);
             await context.SaveChangesAsync();
             userId = usuario.Id;
         });
 
-        var novaSenhaRaw = "NovaSenhaForte@456";
+        var novaSenhaRaw = "NovaSenha@2";
         var command = new UpdatePasswordCommand(userId, novaSenhaRaw);
 
         // ACT
