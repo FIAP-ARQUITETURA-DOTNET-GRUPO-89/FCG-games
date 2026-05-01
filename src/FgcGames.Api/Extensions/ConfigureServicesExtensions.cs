@@ -12,6 +12,7 @@ public static class ConfigureServicesExtensions
         services.AuthnAuthzConfig();
 
         services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen();
 
         services.AddSwaggerGen();
 

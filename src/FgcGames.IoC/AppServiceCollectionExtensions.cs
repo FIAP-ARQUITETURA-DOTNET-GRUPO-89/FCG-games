@@ -23,7 +23,9 @@ public static class AppServiceCollectionExtensions
 
         services.AddValidatorsFromAssemblyContaining<IValidators>();
 
-        services.AddDbContext<FgcGamesContext>(options => options.UseNpgsql(configuration.GetConnectionString("Default")));
+        services.AddDbContext<FgcGamesContext>(options =>
+            options.UseNpgsql(configuration.GetConnectionString("Default"),
+                npgsql => npgsql.EnableRetryOnFailure(maxRetryCount: 5, maxRetryDelay: TimeSpan.FromSeconds(10), errorCodesToAdd: null)));
 
         // Handlers
         services.AddScoped<ICreateUserHandler, CreateUserHandler>();
