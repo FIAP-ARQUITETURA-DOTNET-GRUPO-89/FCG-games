@@ -7,7 +7,8 @@ using Shouldly;
 
 namespace FgcGames.IntegrationTests.Endpoints;
 
-public class AuthIntegrationTests(IntegrationTestFixture fixture) : IClassFixture<IntegrationTestFixture>, IAsyncLifetime
+[Collection("IntegrationTests")]
+public class AuthIntegrationTests(IntegrationTestFixture fixture) : IAsyncLifetime //: IClassFixture<IntegrationTestFixture>, 
 {
     private readonly IntegrationTestFixture _fixture = fixture;
 
@@ -183,6 +184,6 @@ public class AuthIntegrationTests(IntegrationTestFixture fixture) : IClassFixtur
         errors.ShouldContainKey("Senha");
 
         errors["Email"].ShouldContain("'Email' deve ser informado.");
-        errors["Senha"].ShouldContain("'Senha' deve ser informado.");
+        errors["Senha"].ShouldContain("'Senha' deve ser informada.");
     }
 }

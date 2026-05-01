@@ -29,4 +29,8 @@
     <ProjectReference Include="..\..\src\FgcGames.Infra\FgcGames.Infra.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Domain\ValueObjects\" />
+  </ItemGroup>
+
 </Project>

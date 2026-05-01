@@ -23,19 +23,23 @@ public static class AppServiceCollectionExtensions
 
         services.AddValidatorsFromAssemblyContaining<IValidators>();
 
-        services.AddDbContext<FgcGamesContext>(options => options.UseNpgsql(configuration.GetConnectionString("Default")));
+        services.AddDbContext<FgcGamesContext>(options =>
+            options.UseNpgsql(configuration.GetConnectionString("Default"),
+                npgsql => npgsql.EnableRetryOnFailure(maxRetryCount: 5, maxRetryDelay: TimeSpan.FromSeconds(10), errorCodesToAdd: null)));
 
         // Handlers
-        services.AddScoped<ICreateTaskItemExampleHandler, CreateTaskItemExampleHandler>();
-        services.AddScoped<IGetTaskItemByIdHandler, GetTaskItemByIdExampleHandler>();
-        services.AddScoped<IUpdateTaskItemExampleHandler, UpdateTaskItemExampleHandler>();
-        services.AddScoped<IDeleteTaskItemExampleHandler, DeleteTaskItemExampleHandler>();
+        services.AddScoped<ICreateUserHandler, CreateUserHandler>();
+        services.AddScoped<IDeleteUserHandler, DeleteUserHandler>();
+        services.AddScoped<IGetAllUsersHandler, GetAllUsersHandler>();
+        services.AddScoped<IGetUserByIdHandler, GetUserByIdHandler>();
+        services.AddScoped<IGetUsersByNameHandler, GetUsersByNameHandler>();
+        services.AddScoped<IUpdatePasswordHandler, UpdatePasswordHandler>();
+        services.AddScoped<IUpdateUserHandler, UpdateUserHandler>();
+        services.AddScoped<IUpdateUserRoleHandler, UpdateUserRoleHandler>();
 
         services.AddScoped<ILoginHandler, LoginHandler>();
 
         // Repositories
-        services.AddScoped<ITaskItemExampleRepository, TaskItemExampleRepository>();
-
         services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
         // Services

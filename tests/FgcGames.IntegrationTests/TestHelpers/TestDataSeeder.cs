@@ -21,7 +21,7 @@ public static class TestDataSeeder
 
         var admin = new Usuario(
             nome: "Admin",
-            dataNascimento: new DateTime(1990, 1, 1),
+            dataNascimento: new DateOnly(1990, 1, 1),
             email: new Email("admin@fgcgames.com"),
             senha: Senha.FromHash(senhaHasher.Hash("Abc!1234")),
             userRole: UserRole.Admin
@@ -29,7 +29,7 @@ public static class TestDataSeeder
 
         var user = new Usuario(
             nome: "User",
-            dataNascimento: new DateTime(1995, 1, 1),
+            dataNascimento: new DateOnly(1995, 1, 1),
             email: new Email("user@fgcgames.com"),
             senha: Senha.FromHash(senhaHasher.Hash("Abc!1234")),
             userRole: UserRole.User

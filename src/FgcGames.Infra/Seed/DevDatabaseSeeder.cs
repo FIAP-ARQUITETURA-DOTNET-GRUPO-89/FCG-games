@@ -33,14 +33,14 @@ public static class DevDatabaseSeeder
         {
             new(
                 nome: "Maria Silva",
-                dataNascimento: new DateTime(1990, 1, 1),
+                dataNascimento: new DateOnly(1990, 1, 1),
                 email: Email.Create("maria.silva@email.com"),
                 senha: Senha.FromHash(senhaHasher.Hash("Abc!1234")),
                 userRole: UserRole.Admin
             ),
             new(
                 nome: "João Silva",
-                dataNascimento: new DateTime(1995, 1, 1),
+                dataNascimento: new DateOnly(1995, 1, 1),
                 email: Email.Create("joao.silva@email.com"),
                 senha: Senha.FromHash(senhaHasher.Hash("Abc!1234")),
                 userRole: UserRole.User

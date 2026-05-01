@@ -1,6 +1,5 @@
 ﻿using FgcGames.Api.Filters;
 using FgcGames.IoC;
-using Microsoft.OpenApi;
 
 namespace FgcGames.Api.Extensions;
 
@@ -13,21 +12,9 @@ public static class ConfigureServicesExtensions
         services.AuthnAuthzConfig();
 
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen(options =>
-        {
-            options.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
-            {
-                Type = SecuritySchemeType.Http,
-                Scheme = "bearer",
-                BearerFormat = "JWT",
-                Description = "Cole somente o token JWT. O prefixo 'Bearer' será adicionado automaticamente."
-            });
+        services.AddSwaggerGen();
 
-            options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
-            {
-                [new OpenApiSecuritySchemeReference("bearer", document)] = []
-            });
-        });
+        services.AddSwaggerGen();
 
         services.AddScoped(typeof(ValidationFilter<>));
         services.ConfigureAppDependencies(configuration);
