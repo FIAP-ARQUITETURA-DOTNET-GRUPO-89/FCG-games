@@ -11,7 +11,8 @@ using Shouldly;
 
 namespace FgcGames.IntegrationTests.Endpoints.Users;
 
-public class CreateUserIntegrationTests(IntegrationTestFixture fixture) : IClassFixture<IntegrationTestFixture>
+[Collection("IntegrationTests")]
+public class CreateUserIntegrationTests(IntegrationTestFixture fixture) //: IClassFixture<IntegrationTestFixture>
 {
     private readonly HttpClient _client = fixture.HttpClient;
 

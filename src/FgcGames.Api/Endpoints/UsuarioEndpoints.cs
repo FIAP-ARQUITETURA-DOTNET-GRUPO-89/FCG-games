@@ -22,7 +22,20 @@ public static class UsuarioEndpoints
             .Produces(StatusCodes.Status409Conflict)
             .Produces(StatusCodes.Status500InternalServerError);
 
-        group.MapGet("/", GetUsersByName)
+        group.MapGet("/{id:Guid}", GetUserById)
+            .WithSummary("Obtém um usuário pelo ID")
+            .Produces<GetUserByIdResponse>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound);
+
+        group.MapGet("/", GetAllUsers)
+            .AddEndpointFilter<ValidationFilter<GetAllUsersQuery>>()
+            .WithSummary("Lista todos os usuários")
+            .WithDescription("Retorna uma lista paginada de usuários, podendo filtrar por ativos ou inativos.")
+            .Produces<PagedResponse<GetAllUsersResponse>>(StatusCodes.Status200OK)
+            .ProducesValidationProblem(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status500InternalServerError);
+
+        group.MapGet("/busca", GetUsersByName)
             .AddEndpointFilter<ValidationFilter<GetUsersByNameQuery>>()
             .WithSummary("Busca usuários por nome")
             .WithDescription("Endpoint responsável por retornar usuários pelo nome.")
@@ -79,6 +92,18 @@ public static class UsuarioEndpoints
     {
         var result = await handler.Handle(command);
         return Results.Created($"/usuarios/{result.Id}", result);
+    }
+
+    private static async Task<IResult> GetUserById(Guid id, [FromServices] IGetUserByIdHandler handler)
+    {
+        var result = await handler.Handle(new GetUserByIdQuery(id));
+        return result is not null ? Results.Ok(result) : Results.NotFound();
+    }
+
+    private static async Task<IResult> GetAllUsers([AsParameters] GetAllUsersQuery query, [FromServices] IGetAllUsersHandler handler)
+    {
+        var result = await handler.Handle(query);
+        return Results.Ok(result);
     }
 
     private static async Task<IResult> GetUsersByName([AsParameters] GetUsersByNameQuery query, [FromServices] IGetUsersByNameHandler handler)

@@ -10,7 +10,8 @@ using Shouldly;
 
 namespace FgcGames.IntegrationTests.Endpoints.Users;
 
-public class UpdateUserIntegrationTests(IntegrationTestFixture fixture) : IClassFixture<IntegrationTestFixture>
+[Collection("IntegrationTests")]
+public class UpdateUserIntegrationTests(IntegrationTestFixture fixture) //: IClassFixture<IntegrationTestFixture>
 {
     private readonly HttpClient _client = fixture.HttpClient;
 
