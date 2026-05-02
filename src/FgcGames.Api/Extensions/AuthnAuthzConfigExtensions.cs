@@ -2,6 +2,7 @@
 using System.Text;
 using FgcGames.Shared.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -89,13 +90,15 @@ public static class AuthnAuthzConfigExtensions
         }
     };
 
-    private static void ConfigureAuthorization(IServiceCollection services) => 
+    private static void ConfigureAuthorization(IServiceCollection services) =>
         services.AddAuthorization(options =>
         {
-            options.DefaultPolicy = options.GetPolicy("Admin")!;
-
             options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
-
             options.AddPolicy("User", policy => policy.RequireRole("Admin", "User"));
+
+            // DefaultPolicy: qualquer usuário autenticado (sem restrição de role)
+            options.DefaultPolicy = new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .Build();
         });
 }

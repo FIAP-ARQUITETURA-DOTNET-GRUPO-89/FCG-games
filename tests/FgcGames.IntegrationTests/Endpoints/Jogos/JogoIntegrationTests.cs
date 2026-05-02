@@ -21,7 +21,7 @@ public class JogoIntegrationTests(IntegrationTestFixture fixture) : IAsyncLifeti
         nome,
         "Um excelente RPG de mundo aberto.",
         199.90m,
-        new DateTime(2015, 5, 19),
+        new DateTime(2015, 5, 19, 0, 0, 0, DateTimeKind.Utc),
         ClassificacaoEtaria.Dezoito
     );
 
@@ -166,7 +166,7 @@ public class JogoIntegrationTests(IntegrationTestFixture fixture) : IAsyncLifeti
         var client = await TestAuthHelper.CreateAdminClientAsync(_fixture);
         var command = new UpdateGameCommand(
             Guid.NewGuid(), "Nome", "Descrição",
-            99m, DateTime.Now, ClassificacaoEtaria.Livre);
+            99m, DateTime.UtcNow, ClassificacaoEtaria.Livre);
 
         var response = await client.PutAsJsonAsync($"/jogos/{command.Id}", command, TestContext.Current.CancellationToken);
 
@@ -182,7 +182,7 @@ public class JogoIntegrationTests(IntegrationTestFixture fixture) : IAsyncLifeti
         var userClient = await TestAuthHelper.CreateUserClientAsync(_fixture);
         var command = new UpdateGameCommand(
             criado.Id, "Nome", "Descrição",
-            99m, DateTime.Now, ClassificacaoEtaria.Livre);
+            99m, DateTime.UtcNow, ClassificacaoEtaria.Livre);
 
         var response = await userClient.PutAsJsonAsync($"/jogos/{criado.Id}", command, TestContext.Current.CancellationToken);
 
