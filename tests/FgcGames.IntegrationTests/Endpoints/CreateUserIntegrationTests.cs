@@ -22,7 +22,7 @@ public class CreateUserIntegrationTests(IntegrationTestFixture fixture) : IClass
         var command = new CreateUserCommand(
             "Usuario Teste",
             "usuario.teste@gmail.com",
-            new DateTime(1980, 10, 15),
+            new DateOnly(1980, 10, 15),
             "Senha.Forte123!"
         );
 
@@ -45,7 +45,7 @@ public class CreateUserIntegrationTests(IntegrationTestFixture fixture) : IClass
             usuarioDb.Nome.ShouldBe(command.Nome);
             usuarioDb.Role.ShouldBe(UserRole.User);
             usuarioDb.Inativo.ShouldBeFalse();
-            usuarioDb.Senha.Password.ShouldNotBe(command.Senha);
+            usuarioDb.Senha.Hash.ShouldNotBe(command.Senha);
         });
     }
 
@@ -61,9 +61,9 @@ public class CreateUserIntegrationTests(IntegrationTestFixture fixture) : IClass
 
             var usuarioExistente = new Usuario(
                 "Usuario Ja Existente",
-                new DateTime(1990, 1, 1),
+                new DateOnly(1990, 1, 1),
                 Email.Create(emailRepetido),
-                Senha.Create("SenhaForte@123"),
+                Senha.FromHash("$2a$11$hashFakeParaTestes000000000000"),
                 UserRole.User
             );
 
@@ -75,7 +75,7 @@ public class CreateUserIntegrationTests(IntegrationTestFixture fixture) : IClass
         (
             "Tentativa de Clone",
             emailRepetido,
-            new DateTime(2000, 1, 1),
+            new DateOnly(2000, 1, 1),
             "Senha12345678"
         );
 
@@ -94,7 +94,7 @@ public class CreateUserIntegrationTests(IntegrationTestFixture fixture) : IClass
         (
             "Usuario Senha Fraca",
             "senha.curta@email.com",
-            new DateTime(1990, 1, 1),
+            new DateOnly(1990, 1, 1),
             "123"
         );
 

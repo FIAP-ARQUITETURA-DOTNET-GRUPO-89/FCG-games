@@ -25,9 +25,9 @@ public class GetUserIntegrationTests(IntegrationTestFixture fixture) : IClassFix
 
             var usuarios = new List<Usuario>
             {
-                new Usuario("Alice Silva", new DateTime(1990, 5, 10), Email.Create("alice@email.com"), Senha.Create("Senha@123"), UserRole.User),
-                new Usuario("Bruno Silva", new DateTime(1985, 3, 20), Email.Create("bruno@email.com"), Senha.Create("Senha@123"), UserRole.User),
-                new Usuario("Carlos Oliveira", new DateTime(2000, 1, 1), Email.Create("carlos@email.com"), Senha.Create("Senha@123"), UserRole.User)
+                new Usuario("Alice Silva", new DateOnly (1990, 5, 10), Email.Create("alice@email.com"), Senha.FromHash("$2a$11$hashFakeParaTestes000000000000"), UserRole.User),
+                new Usuario("Bruno Silva", new DateOnly(1985, 3, 20), Email.Create("bruno@email.com"), Senha.FromHash("$2a$11$hashFakeParaTestes000000000000"), UserRole.User),
+                new Usuario("Carlos Oliveira", new DateOnly(2000, 1, 1), Email.Create("carlos@email.com"), Senha.FromHash("$2a$11$hashFakeParaTestes000000000000"), UserRole.User)
             };
 
             await context.Usuarios.AddRangeAsync(usuarios);
@@ -63,9 +63,9 @@ public class GetUserIntegrationTests(IntegrationTestFixture fixture) : IClassFix
 
             var usuarioInativo = new Usuario(
                 nomeInativo,
-                new DateTime(1992, 8, 15),
+                new DateOnly(1992, 8, 15),
                 Email.Create("daniel@email.com"),
-                Senha.Create("Senha@123"),
+                Senha.FromHash("$2a$11$hashFakeParaTestes000000000000"),
                 UserRole.User
             );
 
@@ -99,9 +99,9 @@ public class GetUserIntegrationTests(IntegrationTestFixture fixture) : IClassFix
 
             var usuarioQualquer = new Usuario(
                 "João Silva",
-                new DateTime(1990, 1, 1),
+                new DateOnly(1990, 1, 1),
                 Email.Create("joao@teste.com"),
-                Senha.Create("Senha@123"),
+                Senha.FromHash("$2a$11$hashFakeParaTestes000000000000"),
                 UserRole.User
             );
 

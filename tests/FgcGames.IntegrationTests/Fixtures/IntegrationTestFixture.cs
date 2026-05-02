@@ -83,11 +83,6 @@ public class IntegrationTestFixture : IAsyncLifetime
         await action(context);
         await context.SaveChangesAsync();
     }
-    /// <summary>
-    /// Reseta o banco de dados para um estado limpo.
-    /// </summary>
-    public Task ResetDatabaseAsync()
-        => _dbManager.ResetAsync();
 
     private static bool IsContainerRuntimeUnavailable(Exception exception)
         => exception.ToString().Contains(

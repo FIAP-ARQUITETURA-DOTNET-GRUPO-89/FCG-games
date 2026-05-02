@@ -117,7 +117,7 @@ public class UsuarioRepositoryTests
         await repository.SaveChangesAsync();
 
         // Act
-        usuario.AtualizarPerfil("Nome Novo", new DateTime(1995, 5, 20));
+        usuario.AtualizarPerfil("Nome Novo", new DateOnly(1995, 5, 20));
         repository.Update(usuario);
         await repository.SaveChangesAsync();
 
@@ -125,7 +125,7 @@ public class UsuarioRepositoryTests
         var result = await repository.GetByIdAsync(usuario.Id);
         result.ShouldNotBeNull();
         result!.Nome.ShouldBe("Nome Novo");
-        result.DataNascimento.ShouldBe(new DateTime(1995, 5, 20));
+        result.DataNascimento.ShouldBe(new DateOnly(1995, 5, 20));
     }
 
     [Fact]
@@ -171,9 +171,9 @@ public class UsuarioRepositoryTests
     private static Usuario CriarUsuario(string nome, string email)
         => new(
             nome,
-            new DateTime(1990, 1, 1),
+            new DateOnly(1990, 1, 1),
             Email.Create(email),
-            Senha.Create("Senha@123"),
+            Senha.FromHash("$2a$11$hashFakeParaTestes000000000000"),
             UserRole.User
         );
 }

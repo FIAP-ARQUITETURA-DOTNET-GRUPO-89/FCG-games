@@ -1,11 +1,11 @@
-﻿using FgcGames.Domain.Entities;
+using FgcGames.Domain.Entities;
 using FgcGames.Domain.Interfaces.Repositories;
 using FgcGames.Infra.Database;
 using Microsoft.EntityFrameworkCore;
 
 namespace FgcGames.Infra.Repositories;
 
-public class UsuarioRepository(FgcGamesContext dbContext) : IUsuarioRepository
+public class UsuarioRepository(FgcGamesContext context) : BaseRepository<Usuario>(context), IUsuarioRepository
 {
     public async Task<Usuario?> ObterPorEmailAsync(string email)
         => await _context.Set<Usuario>()
@@ -13,6 +13,6 @@ public class UsuarioRepository(FgcGamesContext dbContext) : IUsuarioRepository
             .FirstOrDefaultAsync(x => x.Email.Endereco.ToLower() == email.ToLower());
 
     public async Task<bool> ExistsByEmailAsync(string email)
-       =>  await _dbContext.Set<Usuario>()
+        => await _context.Set<Usuario>()
             .AnyAsync(u => u.Email.Endereco.ToLower() == email.ToLower());
 }
