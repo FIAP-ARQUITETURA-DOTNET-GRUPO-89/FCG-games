@@ -1,9 +1,10 @@
-// FgcGames.Tests/Handlers/DeleteJogoHandlerTests.cs
+﻿// FgcGames.Tests/Handlers/DeleteJogoHandlerTests.cs
 using FgcGames.Application.Commands;
 using FgcGames.Application.Handlers;
 using FgcGames.Domain.Entities;
 using FgcGames.Domain.Enum;
 using FgcGames.Domain.Interfaces.Repositories;
+using FgcGames.Shared.Exceptions;
 using Moq;
 
 namespace FgcGames.Tests.Handlers;
@@ -35,7 +36,7 @@ public class DeleteJogoHandlerTests
     {
         _repositoryMock.Setup(r => r.ObterPorIdAsync(It.IsAny<Guid>())).ReturnsAsync((Jogo?)null);
 
-        await Assert.ThrowsAsync<KeyNotFoundException>(
+        await Assert.ThrowsAsync<NotFoundException>(
             () => _handler.Handle(new DeleteGameCommand(Guid.NewGuid()))
         );
     }
