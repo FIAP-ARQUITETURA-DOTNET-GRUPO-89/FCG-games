@@ -13,13 +13,13 @@ public class UsuarioTests
         var nome = "Jonatas";
         var dataNascimento = new DateTime(1990, 1, 1);
         var email = Email.Create("jonatas@email.com");
-        var senha = Senha.Create("12345678");
+        var senha = Senha.FromHash("12345678");
 
-        var usuario = new Usuario(nome, dataNascimento, email, senha, UserRole.User);
+        var usuario = new Usuario(nome, DateOnly.FromDateTime(dataNascimento), email, senha, UserRole.User);
 
         usuario.ShouldNotBeNull();
         usuario.Nome.ShouldBe(nome);
-        usuario.DataNascimento.ShouldBe(dataNascimento);
+        usuario.DataNascimento.ShouldBe(DateOnly.FromDateTime(dataNascimento));
         usuario.Email.ShouldBe(email);
         usuario.Senha.ShouldBe(senha);
         usuario.Role.ShouldBe(UserRole.User);
@@ -31,13 +31,13 @@ public class UsuarioTests
     {
         var usuario = new Usuario(
             "Nome Antigo",
-            new DateTime(1990, 1, 1),
+            new DateOnly(1990, 1, 1),
             Email.Create("user@email.com"),
-            Senha.Create("12345678"),
+            Senha.FromHash("12345678"),
             UserRole.User);
 
         var novoNome = "Nome Novo";
-        var novaDataNascimento = new DateTime(1995, 5, 20);
+        var novaDataNascimento = new DateOnly(1995, 5, 20);
 
         usuario.AtualizarPerfil(novoNome, novaDataNascimento);
 
@@ -50,12 +50,12 @@ public class UsuarioTests
     {
         var usuario = new Usuario(
             "Nome",
-            new DateTime(1990, 1, 1),
+            new DateOnly(1990, 1, 1),
             Email.Create("user@email.com"),
-            Senha.Create("12345678"),
+            Senha.FromHash("12345678"),
             UserRole.User);
 
-        var exception = Should.Throw<ArgumentException>(() => usuario.AtualizarPerfil("", new DateTime(1995, 1, 1)));
+        var exception = Should.Throw<ArgumentException>(() => usuario.AtualizarPerfil("", new DateOnly(1995, 1, 1)));
 
         exception.Message.ShouldBe("O nome não pode estar vazio.");
     }
@@ -65,12 +65,12 @@ public class UsuarioTests
     {
         var usuario = new Usuario(
             "Nome",
-            new DateTime(1990, 1, 1),
+            new DateOnly(1990, 1, 1),
             Email.Create("user@email.com"),
-            Senha.Create("12345678"),
+            Senha.FromHash("12345678"),
             UserRole.User);
 
-        var dataFutura = DateTime.Now.AddDays(1);
+        var dataFutura = DateOnly.FromDateTime(DateTime.Now.AddDays(1));
 
         var exception = Should.Throw<ArgumentException>(() => usuario.AtualizarPerfil("Nome Novo", dataFutura));
 
@@ -82,12 +82,12 @@ public class UsuarioTests
     {
         var usuario = new Usuario(
             "Nome",
-            new DateTime(1990, 1, 1),
+            new DateOnly(1990, 1, 1),
             Email.Create("user@email.com"),
-            Senha.Create("12345678"),
+            Senha.FromHash("12345678"),
             UserRole.User);
 
-        var novaSenha = Senha.Create("87654321");
+        var novaSenha = Senha.FromHash("87654321");
 
         usuario.AlterarSenha(novaSenha);
 
@@ -99,9 +99,9 @@ public class UsuarioTests
     {
         var usuario = new Usuario(
             "Nome",
-            new DateTime(1990, 1, 1),
+            new DateOnly(1990, 1, 1),
             Email.Create("user@email.com"),
-            Senha.Create("12345678"),
+            Senha.FromHash("12345678"),
             UserRole.User);
 
         usuario.Inativar();
@@ -114,9 +114,9 @@ public class UsuarioTests
     {
         var usuario = new Usuario(
             "Admin",
-            new DateTime(1990, 1, 1),
+            new DateOnly(1990, 1, 1),
             Email.Create("admin@email.com"),
-            Senha.Create("12345678"),
+            Senha.FromHash("12345678"),
             UserRole.Admin);
 
         var ehAdmin = usuario.EhAdmin();
@@ -129,9 +129,9 @@ public class UsuarioTests
     {
         var usuario = new Usuario(
             "User",
-            new DateTime(1990, 1, 1),
+            new DateOnly(1990, 1, 1),
             Email.Create("user@email.com"),
-            Senha.Create("12345678"),
+            Senha.FromHash("12345678"),
             UserRole.User);
 
         var ehAdmin = usuario.EhAdmin();

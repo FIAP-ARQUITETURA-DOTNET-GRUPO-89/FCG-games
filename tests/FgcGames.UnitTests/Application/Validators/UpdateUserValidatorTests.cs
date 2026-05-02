@@ -12,7 +12,7 @@ public class UpdateUserValidatorTests
     [Fact]
     public void Dado_ComandoValido_Quando_Validar_Entao_DeveSerValido()
     {
-        var command = new UpdateUserCommand(Guid.NewGuid(), "Jonatas", new DateTime(1990, 1, 1));
+        var command = new UpdateUserCommand(Guid.NewGuid(), "Jonatas", new DateOnly(1990, 1, 1));
 
         var result = _validator.TestValidate(command);
 
@@ -22,7 +22,7 @@ public class UpdateUserValidatorTests
     [Fact]
     public void Dado_NomeVazio_Quando_Validar_Entao_DeveTerErro()
     {
-        var command = new UpdateUserCommand(Guid.NewGuid(), "", new DateTime(1990, 1, 1));
+        var command = new UpdateUserCommand(Guid.NewGuid(), "", new DateOnly(1990, 1, 1));
 
         var result = _validator.TestValidate(command);
 
@@ -33,7 +33,7 @@ public class UpdateUserValidatorTests
     [Fact]
     public void Dado_DataNascimentoFutura_Quando_Validar_Entao_DeveTerErro()
     {
-        var command = new UpdateUserCommand(Guid.NewGuid(), "Jonatas", DateTime.Today.AddDays(1));
+        var command = new UpdateUserCommand(Guid.NewGuid(), "Jonatas", DateOnly.FromDateTime(DateTime.Today.AddDays(1)));
 
         var result = _validator.TestValidate(command);
 

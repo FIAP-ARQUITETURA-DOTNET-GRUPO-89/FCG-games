@@ -1,3 +1,3 @@
 ﻿namespace FgcGames.Application.Responses;
 
-public record CreateUserResponse(Guid Id, string Nome, DateTime DataNascimento, string Email);
+public record CreateUserResponse(Guid Id, string Nome, DateOnly DataNascimento, string Email);

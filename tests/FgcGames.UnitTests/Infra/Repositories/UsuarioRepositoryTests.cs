@@ -16,7 +16,7 @@ public class UsuarioRepositoryTests
 
         var admin = new Usuario(
             nome: "Admin",
-            dataNascimento: new DateTime(1990, 1, 1),
+            dataNascimento: new DateOnly(1990, 1, 1),
             email: new Email("teste@email.com"),
             senha: Senha.FromHash("Abc!1234"),
             userRole: UserRole.Admin
@@ -63,7 +63,7 @@ public class UsuarioRepositoryTests
 
         var admin = new Usuario(
             nome: "Admin",
-            dataNascimento: new DateTime(1990, 1, 1),
+            dataNascimento: new DateOnly(1990, 1, 1),
             email: new Email("MAIUSCULO@EMAIL.COM"),
             senha: Senha.FromHash("Abc!1234"),
             userRole: UserRole.Admin

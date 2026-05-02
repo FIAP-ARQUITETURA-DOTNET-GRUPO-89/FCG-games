@@ -20,6 +20,7 @@ public class CreateUserHandler(ILogger<CreateUserHandler> logger, IUsuarioReposi
         var senha = new Senha(command.Senha);
 
         var senhaHash = BCrypt.Net.BCrypt.HashPassword(command.Senha);
+        var senha = Senha.FromHash(senhaHash);
 
         var alreadyExists = await _repository.ExistsByEmailAsync(command.Email);
         if (alreadyExists)

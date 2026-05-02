@@ -33,8 +33,8 @@ public class UpdatePasswordHandlerTests
         var result = await _sut.Handle(command);
 
         result.Mensagem.ShouldBe("Senha atualizada com sucesso!");
-        usuario.Senha.Password.ShouldNotBe(command.Password);
-        usuario.Senha.Password.StartsWith("$2").ShouldBeTrue();
+        usuario.Senha.Hash.ShouldNotBe(command.Password);
+        usuario.Senha.Hash.StartsWith("$2").ShouldBeTrue();
 
         await _repository.Received(1).GetByIdAsync(command.Id);
         _repository.Received(1).Update(usuario);
@@ -71,5 +71,5 @@ public class UpdatePasswordHandlerTests
     }
 
     private static Usuario CriarUsuario()
-        => new("Nome", new DateTime(1990, 1, 1), Email.Create("user@email.com"), Senha.Create("Senha@123"), UserRole.User);
+        => new("Nome", new DateOnly(1990, 1, 1), Email.Create("user@email.com"), Senha.FromHash("Senha@123"), UserRole.User);
 }

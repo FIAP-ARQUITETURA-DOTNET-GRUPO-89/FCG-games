@@ -22,27 +22,6 @@ namespace FgcGames.Infra.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("FgcGames.Domain.Entities.TaskItemExample", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsCompleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TaskItemExamples", (string)null);
-                });
-
             modelBuilder.Entity("FgcGames.Domain.Entities.Usuario", b =>
                 {
                     b.Property<Guid>("Id")
@@ -54,7 +33,7 @@ namespace FgcGames.Infra.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                    b.Property<DateTime>("DataNascimento")
+                    b.Property<DateOnly>("DataNascimento")
                         .HasColumnType("date");
 
                     b.Property<bool>("Inativo")
@@ -106,7 +85,7 @@ namespace FgcGames.Infra.Migrations
                             b1.Property<Guid>("UsuarioId")
                                 .HasColumnType("uuid");
 
-                            b1.Property<string>("Password")
+                            b1.Property<string>("Hash")
                                 .IsRequired()
                                 .HasMaxLength(60)
                                 .HasColumnType("character varying(60)")

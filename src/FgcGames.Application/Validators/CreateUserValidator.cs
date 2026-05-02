@@ -13,7 +13,8 @@ public class CreateUserValidator : AbstractValidator<CreateUserCommand>
 
         RuleFor(a => a.DataNascimento)
             .NotEmpty().WithMessage("A data de nascimento é obrigatória.")
-            .LessThan(DateTime.Today).WithMessage("A data de nascimento deve ser no passado.");
+            .Must(d => d < DateOnly.FromDateTime(DateTime.Today))
+            .WithMessage("A data de nascimento deve ser no passado.");
 
         RuleFor(a => a.Email)
             .NotEmpty()
@@ -26,6 +27,6 @@ public class CreateUserValidator : AbstractValidator<CreateUserCommand>
             .Matches(@"[A-Z]").WithMessage("A senha deve conter pelo menos uma letra maiúscula.")
             .Matches(@"[a-z]").WithMessage("A senha deve conter pelo menos uma letra minúscula.")
             .Matches(@"[0-9]").WithMessage("A senha deve conter pelo menos um número.")
-            .Matches(@"[!?*.]").WithMessage("A senha deve conter pelo menos um caractere especial (!? *.).");
+            .Matches(@"[!?\*\.@#$%&]").WithMessage("A senha deve conter pelo menos um caractere especial. Exemplos permitidos: ! ? * . @ # $ % &");
     }
 }

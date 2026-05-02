@@ -162,7 +162,7 @@ public class LoginHandlerTests
     private static Usuario CriarUsuario(string email = "user@fgc.com", string hash = "hash", UserRole role = UserRole.Admin)
         => new(
             nome: "Usuário Teste",
-            dataNascimento: new DateTime(2000, 1, 1),
+            dataNascimento: new DateOnly(2000, 1, 1),
             email: new Email(email),
             senha: Senha.FromHash(hash),
             userRole: role

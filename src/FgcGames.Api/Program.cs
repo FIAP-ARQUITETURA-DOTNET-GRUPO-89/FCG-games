@@ -18,6 +18,5 @@ builder.Services.ConfigureServices(builder.Configuration);
 
 var app = builder.Build();
 
-await app.ConfigureAsync();
 
 app.Run();

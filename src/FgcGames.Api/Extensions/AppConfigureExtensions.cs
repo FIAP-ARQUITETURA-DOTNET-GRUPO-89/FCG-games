@@ -9,15 +9,15 @@ namespace FgcGames.Api.Extensions;
 
 public static class AppConfigureExtensions
 {
-    public static async Task ConfigureAsync(this WebApplication app)
+    public static async Task Configure(this WebApplication app)
     {
         app.UseMiddleware<ExceptionMiddleware>();
         app.UseHttpsRedirection();
 
+
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
-            app.UseSwaggerUI();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
@@ -31,18 +31,26 @@ public static class AppConfigureExtensions
 
             if (db.Database.IsRelational())
             {
-                await db.Database.MigrateAsync();
-
-                await DevDatabaseSeeder.SeedAsync(db, senhaHasher);
+                var retries = 0;
+                while (true)
+                {
+                    try
+                    {
+                        await db.Database.MigrateAsync();
+                        await DevDatabaseSeeder.SeedAsync(db, senhaHasher);
+                        break;
+                    }
+                    catch (Exception) when (retries++ < 5)
+                    {
+                        await Task.Delay(TimeSpan.FromSeconds(3));
+                    }
+                }
             }
         }
 
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.MapDefaultEndpoints();
-
-        app.MapCRUDExampleEndpoints();
         app.MapAuthEndpoints();
         app.MapUsuarioEndpoints();
         app.MapJogoEndpoints();

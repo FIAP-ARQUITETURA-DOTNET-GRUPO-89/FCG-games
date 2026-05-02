@@ -13,9 +13,7 @@ public static class UsuarioEndpoints
     {
         var group = app.MapGroup("/usuarios").WithTags("Usuarios");
 
-        var userGroup = group.MapGroup("/users");
-
-        userGroup.MapPost("/", CreateUser)
+        group.MapPost("/", CreateUser)
             .AddEndpointFilter<ValidationFilter<CreateUserCommand>>()
             .WithSummary("Cria um novo usuário")
             .WithDescription("Endpoint responsável por criar um novo usuário.")
@@ -24,7 +22,20 @@ public static class UsuarioEndpoints
             .Produces(StatusCodes.Status409Conflict)
             .Produces(StatusCodes.Status500InternalServerError);
 
-        userGroup.MapGet("/", GetUsersByName)
+        group.MapGet("/{id:Guid}", GetUserById)
+            .WithSummary("Obtém um usuário pelo ID")
+            .Produces<GetUserByIdResponse>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound);
+
+        group.MapGet("/", GetAllUsers)
+            .AddEndpointFilter<ValidationFilter<GetAllUsersQuery>>()
+            .WithSummary("Lista todos os usuários")
+            .WithDescription("Retorna uma lista paginada de usuários, podendo filtrar por ativos ou inativos.")
+            .Produces<PagedResponse<GetAllUsersResponse>>(StatusCodes.Status200OK)
+            .ProducesValidationProblem(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status500InternalServerError);
+
+        group.MapGet("/busca", GetUsersByName)
             .AddEndpointFilter<ValidationFilter<GetUsersByNameQuery>>()
             .WithSummary("Busca usuários por nome")
             .WithDescription("Endpoint responsável por retornar usuários pelo nome.")
@@ -33,43 +44,47 @@ public static class UsuarioEndpoints
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status500InternalServerError);
 
-        userGroup.MapPut("/{id:Guid}", UpdateUser)
+        group.MapPut("/{id:Guid}", UpdateUser)
             .AddEndpointFilter<ValidationFilter<UpdateUserCommand>>()
             .WithSummary("Atualiza um usuário")
             .WithDescription("Endpoint responsável por atualizar um usuário existente.")
+            .Produces<UpdateUserResponse>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status204NoContent)
             .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status409Conflict)
             .Produces(StatusCodes.Status500InternalServerError);
 
-        userGroup.MapPatch("/{id:Guid}/role", UpdateUserRole)
+        group.MapPatch("/{id:Guid}/role", UpdateUserRole)
             .AddEndpointFilter<ValidationFilter<UpdateUserRoleCommand>>()
             .WithSummary("Atualiza a role de um usuário")
             .WithDescription("Endpoint responsável por atualizar a role de um usuário existente.")
+            .Produces<UpdateUserResponse>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status204NoContent)
             .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status409Conflict)
             .Produces(StatusCodes.Status500InternalServerError);
 
-        userGroup.MapPut("/{id:Guid}/password", UpdatePassword)
+        group.MapPatch("/{id:Guid}/password", UpdatePassword)
             .AddEndpointFilter<ValidationFilter<UpdatePasswordCommand>>()
             .WithSummary("Atualiza a senha de um usuário")
             .WithDescription("Endpoint responsável por atualizar a senha de um usuário existente.")
             .Produces(StatusCodes.Status204NoContent)
+            .Produces<UpdatePasswordResponse>(StatusCodes.Status200OK)
             .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status409Conflict)
             .Produces(StatusCodes.Status500InternalServerError);
 
-        userGroup.MapDelete("/{id:Guid}", DeleteUser)
+        group.MapDelete("/{id:Guid}", DeleteUser)
             .AddEndpointFilter<ValidationFilter<DeleteUserCommand>>()
             .WithSummary("Remove um usuário")
             .WithDescription("Endpoint responsável por deletar um usuário existente.")
             .Produces(StatusCodes.Status204NoContent)
             .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status404NotFound)
+            .Produces<DeleteUserResponse>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status500InternalServerError);
     }
 
@@ -77,6 +92,18 @@ public static class UsuarioEndpoints
     {
         var result = await handler.Handle(command);
         return Results.Created($"/usuarios/{result.Id}", result);
+    }
+
+    private static async Task<IResult> GetUserById(Guid id, [FromServices] IGetUserByIdHandler handler)
+    {
+        var result = await handler.Handle(new GetUserByIdQuery(id));
+        return result is not null ? Results.Ok(result) : Results.NotFound();
+    }
+
+    private static async Task<IResult> GetAllUsers([AsParameters] GetAllUsersQuery query, [FromServices] IGetAllUsersHandler handler)
+    {
+        var result = await handler.Handle(query);
+        return Results.Ok(result);
     }
 
     private static async Task<IResult> GetUsersByName([AsParameters] GetUsersByNameQuery query, [FromServices] IGetUsersByNameHandler handler)
@@ -87,25 +114,25 @@ public static class UsuarioEndpoints
 
     private static async Task<IResult> UpdateUser(Guid id, UpdateUserCommand command, [FromServices] IUpdateUserHandler handler)
     {
-        await handler.Handle(command);
-        return Results.NoContent();
+        var result = await handler.Handle(command);
+        return Results.Ok(result);
     }
 
     private static async Task<IResult> UpdateUserRole(Guid id, UpdateUserRoleCommand command, [FromServices] IUpdateUserRoleHandler handler)
     {
-        await handler.Handle(command);
-        return Results.NoContent();
+        var result = await handler.Handle(command);
+        return Results.Ok(result);
     }
 
     private static async Task<IResult> UpdatePassword(Guid id, UpdatePasswordCommand command, [FromServices] IUpdatePasswordHandler handler)
     {
-        await handler.Handle(command);
-        return Results.NoContent();
+        var result = await handler.Handle(command with { Id = id });
+        return Results.Ok(result);
     }
 
     private static async Task<IResult> DeleteUser([AsParameters] DeleteUserCommand command, [FromServices] IDeleteUserHandler handler)
     {
-        await handler.Handle(command);
-        return Results.NoContent();
+        var result = await handler.Handle(command);
+        return Results.Ok(result);
     }
 }
