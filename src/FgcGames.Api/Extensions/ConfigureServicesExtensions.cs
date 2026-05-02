@@ -14,8 +14,6 @@ public static class ConfigureServicesExtensions
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
 
-        services.AddSwaggerGen();
-
         services.AddScoped(typeof(ValidationFilter<>));
         services.ConfigureAppDependencies(configuration);
     }
