@@ -18,5 +18,7 @@ builder.Services.ConfigureServices(builder.Configuration);
 
 var app = builder.Build();
 
+app.MapDefaultEndpoints();
+await app.Configure();
 
 app.Run();
