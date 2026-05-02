@@ -28,6 +28,8 @@ public static class AppServiceCollectionExtensions
                 npgsql => npgsql.EnableRetryOnFailure(maxRetryCount: 5, maxRetryDelay: TimeSpan.FromSeconds(10), errorCodesToAdd: null)));
 
         // Handlers
+        services.AddScoped<IGetUserByIdHandler, GetUserByIdHandler>();
+        services.AddScoped<IGetAllUsersHandler, GetAllUsersHandler>();
         services.AddScoped<IGetUsersByNameHandler, GetUsersByNameHandler>();
         services.AddScoped<ICreateUserHandler, CreateUserHandler>();
         services.AddScoped<IUpdateUserHandler, UpdateUserHandler>();
