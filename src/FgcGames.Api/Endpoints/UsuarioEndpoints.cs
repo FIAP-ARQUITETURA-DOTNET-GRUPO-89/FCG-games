@@ -14,6 +14,7 @@ public static class UsuarioEndpoints
         var group = app.MapGroup("/usuarios").WithTags("Usuarios");
 
         group.MapPost("/", CreateUser)
+            .RequireAuthorization("Admin")
             .AddEndpointFilter<ValidationFilter<CreateUserCommand>>()
             .WithSummary("Cria um novo usuário")
             .WithDescription("Endpoint responsável por criar um novo usuário.")
@@ -23,11 +24,13 @@ public static class UsuarioEndpoints
             .Produces(StatusCodes.Status500InternalServerError);
 
         group.MapGet("/{id:Guid}", GetUserById)
+            .RequireAuthorization()
             .WithSummary("Obtém um usuário pelo ID")
             .Produces<GetUserByIdResponse>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound);
 
         group.MapGet("/", GetAllUsers)
+            .RequireAuthorization()
             .AddEndpointFilter<ValidationFilter<GetAllUsersQuery>>()
             .WithSummary("Lista todos os usuários")
             .WithDescription("Retorna uma lista paginada de usuários, podendo filtrar por ativos ou inativos.")
@@ -36,6 +39,7 @@ public static class UsuarioEndpoints
             .Produces(StatusCodes.Status500InternalServerError);
 
         group.MapGet("/busca", GetUsersByName)
+            .RequireAuthorization()
             .AddEndpointFilter<ValidationFilter<GetUsersByNameQuery>>()
             .WithSummary("Busca usuários por nome")
             .WithDescription("Endpoint responsável por retornar usuários pelo nome.")
@@ -45,6 +49,7 @@ public static class UsuarioEndpoints
             .Produces(StatusCodes.Status500InternalServerError);
 
         group.MapPut("/{id:Guid}", UpdateUser)
+            .RequireAuthorization()
             .AddEndpointFilter<ValidationFilter<UpdateUserCommand>>()
             .WithSummary("Atualiza um usuário")
             .WithDescription("Endpoint responsável por atualizar um usuário existente.")
@@ -56,6 +61,7 @@ public static class UsuarioEndpoints
             .Produces(StatusCodes.Status500InternalServerError);
 
         group.MapPatch("/{id:Guid}/role", UpdateUserRole)
+            .RequireAuthorization("Admin")
             .AddEndpointFilter<ValidationFilter<UpdateUserRoleCommand>>()
             .WithSummary("Atualiza a role de um usuário")
             .WithDescription("Endpoint responsável por atualizar a role de um usuário existente.")
@@ -67,6 +73,7 @@ public static class UsuarioEndpoints
             .Produces(StatusCodes.Status500InternalServerError);
 
         group.MapPatch("/{id:Guid}/password", UpdatePassword)
+            .RequireAuthorization()
             .AddEndpointFilter<ValidationFilter<UpdatePasswordCommand>>()
             .WithSummary("Atualiza a senha de um usuário")
             .WithDescription("Endpoint responsável por atualizar a senha de um usuário existente.")
@@ -78,6 +85,7 @@ public static class UsuarioEndpoints
             .Produces(StatusCodes.Status500InternalServerError);
 
         group.MapDelete("/{id:Guid}", DeleteUser)
+            .RequireAuthorization("Admin")
             .AddEndpointFilter<ValidationFilter<DeleteUserCommand>>()
             .WithSummary("Remove um usuário")
             .WithDescription("Endpoint responsável por deletar um usuário existente.")
