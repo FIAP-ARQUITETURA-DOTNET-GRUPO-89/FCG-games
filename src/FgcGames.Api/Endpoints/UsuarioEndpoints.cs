@@ -14,7 +14,6 @@ public static class UsuarioEndpoints
         var group = app.MapGroup("/usuarios").WithTags("Usuarios");
 
         group.MapPost("/", CreateUser)
-            .RequireAuthorization("Admin")
             .AddEndpointFilter<ValidationFilter<CreateUserCommand>>()
             .WithSummary("Cria um novo usuário")
             .WithDescription("Endpoint responsável por criar um novo usuário.")
