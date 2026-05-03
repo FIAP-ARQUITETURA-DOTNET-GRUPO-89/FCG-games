@@ -1,5 +1,5 @@
-﻿namespace FgcGames.Application.Commands;
+﻿using FgcGames.Domain.Enum;
 
-public record CreateUserCommand (string Nome, string Email, DateOnly DataNascimento, string Senha)
-{
-}
+namespace FgcGames.Application.Commands;
+
+public record CreateUserCommand(string Nome, string Email, DateOnly DataNascimento, string Senha, UserRole Role = UserRole.User);

@@ -34,7 +34,7 @@ public class CreateUserHandler(ILogger<CreateUserHandler> logger, IUsuarioReposi
             command.DataNascimento,
             email,
             senha,
-            0
+            command.Role
         );
 
         _repository.Add(user);

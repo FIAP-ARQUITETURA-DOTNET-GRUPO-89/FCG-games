@@ -14,9 +14,20 @@ public static class UsuarioEndpoints
         var group = app.MapGroup("/usuarios").WithTags("Usuarios");
 
         group.MapPost("/", CreateUser)
+            .AllowAnonymous()
             .AddEndpointFilter<ValidationFilter<CreateUserCommand>>()
             .WithSummary("Cria um novo usuário")
             .WithDescription("Endpoint responsável por criar um novo usuário.")
+            .Produces<CreateUserResponse>(StatusCodes.Status201Created)
+            .ProducesValidationProblem(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status409Conflict)
+            .Produces(StatusCodes.Status500InternalServerError);
+
+        group.MapPost("/admin", CreateAdminUser)
+            .RequireAuthorization("Admin")
+            .AddEndpointFilter<ValidationFilter<CreateUserCommand>>()
+            .WithSummary("Cria um novo usuário administrador")
+            .WithDescription("Endpoint responsável por criar um novo usuário com perfil Admin.")
             .Produces<CreateUserResponse>(StatusCodes.Status201Created)
             .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status409Conflict)
@@ -97,7 +108,13 @@ public static class UsuarioEndpoints
 
     private static async Task<IResult> CreateUser(CreateUserCommand command, [FromServices] ICreateUserHandler handler)
     {
-        var result = await handler.Handle(command);
+        var result = await handler.Handle(command with { Role = Domain.Enum.UserRole.User });
+        return Results.Created($"/usuarios/{result.Id}", result);
+    }
+
+    private static async Task<IResult> CreateAdminUser(CreateUserCommand command, [FromServices] ICreateUserHandler handler)
+    {
+        var result = await handler.Handle(command with { Role = Domain.Enum.UserRole.Admin });
         return Results.Created($"/usuarios/{result.Id}", result);
     }
 
