@@ -1,4 +1,5 @@
-﻿using FgcGames.Application.Commands;
+﻿using FgcGames.Api.Filters;
+using FgcGames.Application.Commands;
 using FgcGames.Application.Interfaces;
 using FgcGames.Application.Queries;
 using FgcGames.Application.Responses;
@@ -13,6 +14,7 @@ public static class JogoEndpoints
         var group = app.MapGroup("/jogos").WithTags("Jogos");
 
         group.MapPost("/", CreateJogo)
+            .AddEndpointFilter<ValidationFilter<CreateGameCommand>>()
             .RequireAuthorization("Admin")
             .WithSummary("Cria um novo jogo")
             .WithDescription("Apenas administradores podem cadastrar jogos.")
@@ -21,9 +23,11 @@ public static class JogoEndpoints
             .Produces(StatusCodes.Status500InternalServerError);
 
         group.MapGet("/", GetAllJogos)
+            .AddEndpointFilter<ValidationFilter<GetAllGamesQuery>>()
             .RequireAuthorization()
-            .WithSummary("Lista todos os jogos ativos")
-            .Produces<IEnumerable<GameResponse>>(StatusCodes.Status200OK)
+            .WithSummary("Lista todos os jogos ativos com paginação")
+            .Produces<PagedResponse<GameResponse>>(StatusCodes.Status200OK)
+            .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status500InternalServerError);
 
         group.MapGet("/{id:Guid}", GetJogoById)
@@ -34,16 +38,20 @@ public static class JogoEndpoints
             .Produces(StatusCodes.Status500InternalServerError);
 
         group.MapPut("/{id:Guid}", UpdateJogo)
+            .AddEndpointFilter<ValidationFilter<UpdateGameCommand>>()
             .RequireAuthorization("Admin")
             .WithSummary("Atualiza um jogo")
             .Produces(StatusCodes.Status204NoContent)
+            .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status500InternalServerError);
 
         group.MapPatch("/{id:Guid}/preco", AlterarPreco)
+            .AddEndpointFilter<ValidationFilter<UpdatePriceCommand>>()
             .RequireAuthorization("Admin")
             .WithSummary("Altera o preço de um jogo")
             .Produces(StatusCodes.Status204NoContent)
+            .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status500InternalServerError);
 
@@ -63,9 +71,9 @@ public static class JogoEndpoints
     }
 
     private static async Task<IResult> GetAllJogos(
-        [FromServices] IGetAllGamesHandler handler)
+        [AsParameters] GetAllGamesQuery query, [FromServices] IGetAllGamesHandler handler)
     {
-        var result = await handler.Handle(new GetAllGamesQuery());
+        var result = await handler.Handle(query);
         return Results.Ok(result);
     }
 
