@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Net.Http.Json;
 using FgcGames.Application.Commands;
 using FgcGames.Application.Responses;
@@ -6,21 +6,31 @@ using FgcGames.Domain.Entities;
 using FgcGames.Domain.Enum;
 using FgcGames.Domain.ValueObjects;
 using FgcGames.IntegrationTests.Fixtures;
+using FgcGames.IntegrationTests.TestHelpers;
 using Shouldly;
 
 namespace FgcGames.IntegrationTests.Endpoints.Users;
 
 [Collection("IntegrationTests")]
-public class UpdateUserIntegrationTests(IntegrationTestFixture fixture) //: IClassFixture<IntegrationTestFixture>
+public class UpdateUserIntegrationTests(IntegrationTestFixture fixture) : IAsyncLifetime
 {
-    private readonly HttpClient _client = fixture.HttpClient;
+    private readonly IntegrationTestFixture _fixture = fixture;
+    private HttpClient _client = default!;
+
+    public async ValueTask InitializeAsync()
+    {
+        await _fixture.ResetDatabaseAsync();
+        _client = await TestAuthHelper.CreateAdminClientAsync(_fixture);
+    }
+
+    public ValueTask DisposeAsync() => ValueTask.CompletedTask;
 
     [Fact]
     public async Task Dado_DadosValidos_Quando_AtualizarPerfil_Entao_AtualizaComSucesso()
     {
         // ARRANGE
         var userId = Guid.Empty;
-        await fixture.ExecuteDbContextAsync(async (context) =>
+        await _fixture.ExecuteDbContextAsync(async (context) =>
         {
             var usuario = new Usuario("Nome Antigo", new DateOnly(1990, 1, 1), Email.Create("perfil@teste.com"), Senha.FromHash("Senha@123"), UserRole.User);
             context.Usuarios.Add(usuario);
@@ -40,7 +50,7 @@ public class UpdateUserIntegrationTests(IntegrationTestFixture fixture) //: ICla
         result.ShouldNotBeNull();
         result.Mensagem.ShouldBe("Perfil atualizado com sucesso!");
 
-        await fixture.ExecuteDbContextAsync(async (context) =>
+        await _fixture.ExecuteDbContextAsync(async (context) =>
         {
             var userDb = await context.Usuarios.FindAsync(userId);
 
@@ -69,7 +79,7 @@ public class UpdateUserIntegrationTests(IntegrationTestFixture fixture) //: ICla
     {
         // ARRANGE
         var userId = Guid.Empty;
-        await fixture.ExecuteDbContextAsync(async (context) =>
+        await _fixture.ExecuteDbContextAsync(async (context) =>
         {
             var usuario = new Usuario("User Role", new DateOnly(1990, 1, 1), Email.Create("role@teste.com"), Senha.FromHash("Senha@123"), UserRole.User);
             context.Usuarios.Add(usuario);
@@ -86,7 +96,7 @@ public class UpdateUserIntegrationTests(IntegrationTestFixture fixture) //: ICla
         // ASSERT
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
-        await fixture.ExecuteDbContextAsync(async (context) =>
+        await _fixture.ExecuteDbContextAsync(async (context) =>
         {
             var userDb = await context.Usuarios.FindAsync(userId);
             userDb.ShouldNotBeNull();
@@ -99,7 +109,7 @@ public class UpdateUserIntegrationTests(IntegrationTestFixture fixture) //: ICla
     {
         // ARRANGE
         var userId = Guid.Empty;
-        await fixture.ExecuteDbContextAsync(async (context) =>
+        await _fixture.ExecuteDbContextAsync(async (context) =>
         {
             var usuario = new Usuario("User Senha", new DateOnly(1990, 1, 1), Email.Create("senha@teste.com"), Senha.FromHash("Senha01@"), UserRole.User);
             context.Usuarios.Add(usuario);
@@ -116,7 +126,7 @@ public class UpdateUserIntegrationTests(IntegrationTestFixture fixture) //: ICla
         // ASSERT
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
-        await fixture.ExecuteDbContextAsync(async (context) =>
+        await _fixture.ExecuteDbContextAsync(async (context) =>
         {
             var userDb = await context.Usuarios.FindAsync(userId);
             userDb.ShouldNotBeNull();
@@ -130,7 +140,7 @@ public class UpdateUserIntegrationTests(IntegrationTestFixture fixture) //: ICla
     {
         // ARRANGE
         var userId = Guid.Empty;
-        await fixture.ExecuteDbContextAsync(async (context) =>
+        await _fixture.ExecuteDbContextAsync(async (context) =>
         {
             var usuario = new Usuario("User Senha Curta", new DateOnly(1990, 1, 1), Email.Create("short@teste.com"), Senha.FromHash("Senha@123"), UserRole.User);
             context.Usuarios.Add(usuario);

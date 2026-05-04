@@ -1,18 +1,28 @@
-﻿using System.Net;
+using System.Net;
 using System.Net.Http.Json;
 using FgcGames.Application.Responses;
 using FgcGames.Domain.Entities;
 using FgcGames.Domain.ValueObjects;
 using FgcGames.Domain.Enum;
 using FgcGames.IntegrationTests.Fixtures;
+using FgcGames.IntegrationTests.TestHelpers;
 using Shouldly;
 
 namespace FgcGames.IntegrationTests.Endpoints.Users;
 
 [Collection("IntegrationTests")]
-public class GetUserIntegrationTests(IntegrationTestFixture fixture) //: IClassFixture<IntegrationTestFixture>
+public class GetUserIntegrationTests(IntegrationTestFixture fixture) : IAsyncLifetime
 {
-    private readonly HttpClient _client = fixture.HttpClient;
+    private readonly IntegrationTestFixture _fixture = fixture;
+    private HttpClient _client = default!;
+
+    public async ValueTask InitializeAsync()
+    {
+        await _fixture.ResetDatabaseAsync();
+        _client = await TestAuthHelper.CreateAdminClientAsync(_fixture);
+    }
+
+    public ValueTask DisposeAsync() => ValueTask.CompletedTask;
 
     [Fact]
     public async Task Dado_NomeExistenteNoBanco_Quando_BuscarUsuariosPorNome_Entao_RetornaListaPaginadaCorreta()
@@ -20,7 +30,7 @@ public class GetUserIntegrationTests(IntegrationTestFixture fixture) //: IClassF
         // ARRANGE
         var termoBusca = "Oliveira";
 
-        await fixture.ExecuteDbContextAsync(async (context) =>
+        await _fixture.ExecuteDbContextAsync(async (context) =>
         {
             context.Usuarios.RemoveRange(context.Usuarios);
 
@@ -57,7 +67,7 @@ public class GetUserIntegrationTests(IntegrationTestFixture fixture) //: IClassF
         // ARRANGE
         var nomeInativo = "Roberto Almeida";
 
-        await fixture.ExecuteDbContextAsync(async (context) =>
+        await _fixture.ExecuteDbContextAsync(async (context) =>
         {
             context.Usuarios.RemoveRange(context.Usuarios);
 
@@ -69,8 +79,7 @@ public class GetUserIntegrationTests(IntegrationTestFixture fixture) //: IClassF
                 UserRole.User
             );
 
-            var property = typeof(Usuario).GetProperty("Inativo");
-            property?.SetValue(usuarioInativo, true);
+            usuarioInativo.Inativar();
 
             context.Usuarios.Add(usuarioInativo);
             await context.SaveChangesAsync();
@@ -93,7 +102,7 @@ public class GetUserIntegrationTests(IntegrationTestFixture fixture) //: IClassF
     public async Task Dado_NomeVazio_Quando_BuscarUsuarios_Entao_RetornaResultadoPaginadoVazio()
     {
         // ARRANGE
-        await fixture.ExecuteDbContextAsync(async (context) =>
+        await _fixture.ExecuteDbContextAsync(async (context) =>
         {
             context.Usuarios.RemoveRange(context.Usuarios);
 
@@ -126,7 +135,7 @@ public class GetUserIntegrationTests(IntegrationTestFixture fixture) //: IClassF
     public async Task Dado_ExistemUsuariosNoBanco_Quando_ListarTodos_Entao_RetornaListaPaginadaComTodosOsAtivos()
     {
         // ARRANGE
-        await fixture.ExecuteDbContextAsync(async (context) =>
+        await _fixture.ExecuteDbContextAsync(async (context) =>
         {
             context.Usuarios.RemoveRange(context.Usuarios);
             await context.Usuarios.AddRangeAsync(
@@ -154,7 +163,7 @@ public class GetUserIntegrationTests(IntegrationTestFixture fixture) //: IClassF
         // ARRANGE
         var usuarioOriginal = new Usuario("Usuario Exemplo", new DateOnly(1995, 1, 1), Email.Create("exemplo@teste.com"), Senha.FromHash("Senha@123"), UserRole.Admin);
 
-        await fixture.ExecuteDbContextAsync(async (context) =>
+        await _fixture.ExecuteDbContextAsync(async (context) =>
         {
             context.Usuarios.Add(usuarioOriginal);
             await context.SaveChangesAsync();

@@ -82,9 +82,9 @@ public class JogoIntegrationTests(IntegrationTestFixture fixture) : IAsyncLifeti
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
-        var result = await response.ReadContentAsync<IEnumerable<GameResponse>>(TestContext.Current.CancellationToken);
+        var result = await response.ReadContentAsync<PagedResponse<GameResponse>>(TestContext.Current.CancellationToken);
         result.ShouldNotBeNull();
-        result.Count().ShouldBeGreaterThanOrEqualTo(2);
+        result.Itens.Count().ShouldBeGreaterThanOrEqualTo(2);
     }
 
     [Fact]

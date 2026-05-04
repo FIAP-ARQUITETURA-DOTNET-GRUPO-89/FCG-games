@@ -28,8 +28,8 @@ namespace FgcGames.Infra.EntityTypeConfigurations
                 .IsRequired()
                 .HasConversion<string>();
 
-            builder.Property(j => j.DataCriacao).IsRequired();
-            builder.Property(j => j.DataLancamento).IsRequired();
+            builder.Property(j => j.DataCriacao).IsRequired().HasColumnType("timestamp without time zone");
+            builder.Property(j => j.DataLancamento).IsRequired().HasColumnType("timestamp without time zone");
             builder.Property(j => j.Inativo).IsRequired();
         }
     }

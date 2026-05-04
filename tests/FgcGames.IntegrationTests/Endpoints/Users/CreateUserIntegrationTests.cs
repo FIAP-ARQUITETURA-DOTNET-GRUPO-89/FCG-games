@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Net.Http.Json;
 using FgcGames.Application.Commands;
 using FgcGames.Application.Responses;
@@ -12,9 +12,18 @@ using Shouldly;
 namespace FgcGames.IntegrationTests.Endpoints.Users;
 
 [Collection("IntegrationTests")]
-public class CreateUserIntegrationTests(IntegrationTestFixture fixture) //: IClassFixture<IntegrationTestFixture>
+public class CreateUserIntegrationTests(IntegrationTestFixture fixture) : IAsyncLifetime
 {
-    private readonly HttpClient _client = fixture.HttpClient;
+    private readonly IntegrationTestFixture _fixture = fixture;
+    private HttpClient _client = default!;
+
+    public async ValueTask InitializeAsync()
+    {
+        await _fixture.ResetDatabaseAsync();
+        _client = _fixture.HttpClient;
+    }
+
+    public ValueTask DisposeAsync() => ValueTask.CompletedTask;
 
     [Fact]
     public async Task Dado_DadosValidos_Quando_CriarUsuario_Entao_SalvaNoBancoERetornarCreated()
@@ -37,7 +46,7 @@ public class CreateUserIntegrationTests(IntegrationTestFixture fixture) //: ICla
         result.ShouldNotBeNull();
         result.Id.ShouldNotBe(Guid.Empty);
 
-        await fixture.ExecuteDbContextAsync(async (context) =>
+        await _fixture.ExecuteDbContextAsync(async (context) =>
         {
             var usuarioDb = await context.Usuarios
                 .FirstOrDefaultAsync(u => u.Email.Endereco == command.Email.ToLower());
@@ -47,16 +56,16 @@ public class CreateUserIntegrationTests(IntegrationTestFixture fixture) //: ICla
             usuarioDb.Role.ShouldBe(UserRole.User);
             usuarioDb.Inativo.ShouldBeFalse();
             usuarioDb.Senha.Hash.ShouldNotBe(command.Senha);
-        }); 
+        });
     }
 
     [Fact]
-    public async Task Dado_EmailJaCadastrado_Quando_CriarUsuario_Entao_RetornaBadRequest()
+    public async Task Dado_EmailJaCadastrado_Quando_CriarUsuario_Entao_RetornaConflict()
     {
         // ARRANGE
         var emailRepetido = "email.repetido@gmail.com";
 
-        await fixture.ExecuteDbContextAsync(async (context) =>
+        await _fixture.ExecuteDbContextAsync(async (context) =>
         {
             context.Usuarios.RemoveRange(context.Usuarios);
 
@@ -77,14 +86,14 @@ public class CreateUserIntegrationTests(IntegrationTestFixture fixture) //: ICla
             "Tentativa de Clone",
             emailRepetido,
             new DateOnly(2000, 5, 12),
-            "Senha12345678"
+            "Senha@12"
         );
 
         // ACT
         var response = await _client.PostAsJsonAsync("/usuarios", command, TestContext.Current.CancellationToken);
 
         // ASSERT
-        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        response.StatusCode.ShouldBe(HttpStatusCode.Conflict);
     }
 
     [Fact]

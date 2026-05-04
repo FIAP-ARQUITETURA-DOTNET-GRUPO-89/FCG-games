@@ -1,18 +1,28 @@
-﻿using System.Net;
+using System.Net;
 using System.Net.Http.Json;
 using FgcGames.Application.Responses;
 using FgcGames.Domain.Entities;
 using FgcGames.Domain.Enum;
 using FgcGames.Domain.ValueObjects;
 using FgcGames.IntegrationTests.Fixtures;
+using FgcGames.IntegrationTests.TestHelpers;
 using Shouldly;
 
 namespace FgcGames.IntegrationTests.Endpoints.Users;
 
 [Collection("IntegrationTests")]
-public class DeleteUserIntegrationTests(IntegrationTestFixture fixture) //: IClassFixture<IntegrationTestFixture>
+public class DeleteUserIntegrationTests(IntegrationTestFixture fixture) : IAsyncLifetime
 {
-    private readonly HttpClient _client = fixture.HttpClient;
+    private readonly IntegrationTestFixture _fixture = fixture;
+    private HttpClient _client = default!;
+
+    public async ValueTask InitializeAsync()
+    {
+        await _fixture.ResetDatabaseAsync();
+        _client = await TestAuthHelper.CreateAdminClientAsync(_fixture);
+    }
+
+    public ValueTask DisposeAsync() => ValueTask.CompletedTask;
 
     [Fact]
     public async Task Dado_UsuarioAtivoNoBanco_Quando_InativarUsuario_Entao_MudaStatusParaInativoERetornaOk()
@@ -20,7 +30,7 @@ public class DeleteUserIntegrationTests(IntegrationTestFixture fixture) //: ICla
         // ARRANGE
         var userId = Guid.Empty;
 
-        await fixture.ExecuteDbContextAsync(async (context) =>
+        await _fixture.ExecuteDbContextAsync(async (context) =>
         {
             context.Usuarios.RemoveRange(context.Usuarios);
 
@@ -47,7 +57,7 @@ public class DeleteUserIntegrationTests(IntegrationTestFixture fixture) //: ICla
         result.ShouldNotBeNull();
         result.Inativo.ShouldBeTrue();
 
-        await fixture.ExecuteDbContextAsync(async (context) =>
+        await _fixture.ExecuteDbContextAsync(async (context) =>
         {
             var userDb = await context.Usuarios.FindAsync(userId);
             userDb.ShouldNotBeNull();
