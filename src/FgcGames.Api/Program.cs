@@ -19,6 +19,8 @@ builder.Host.UseSerilog((context, services, configuration) =>
 
 builder.Services.ConfigureServices(builder.Configuration);
 
+builder.Services.AddHttpContextAccessor();
+
 var app = builder.Build();
 
 app.MapDefaultEndpoints();

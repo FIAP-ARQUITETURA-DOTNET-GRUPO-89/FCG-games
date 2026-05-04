@@ -1,6 +1,7 @@
 ﻿using FgcGames.Application.Commands;
 using FgcGames.Application.Interfaces;
 using FgcGames.Application.Responses;
+using FgcGames.Domain.Enum;
 using FgcGames.Domain.Interfaces.Repositories;
 using Microsoft.Extensions.Logging;
 
@@ -11,26 +12,35 @@ public class UpdateUserRoleHandler(ILogger<UpdateUserRoleHandler> logger, IUsuar
     private readonly ILogger<UpdateUserRoleHandler> _logger = logger;
     private readonly IUsuarioRepository _repository = repository;
 
-    public async Task<UpdateUserRoleResponse> Handle(UpdateUserRoleCommand command)
+    public async Task<UpdateUserRoleResponse?> Handle(UpdateUserRoleCommand command)
     {
         var user = await _repository.GetByIdAsync(command.Id);
 
         if (user == null)
         {
-            _logger.LogWarning("Tentativa de atualização de role falhou: Usuário com ID {Id} não encontrado.", command.Id);
-            throw new Exception($"Usuário com ID {command.Id} não encontrado.");
+            _logger.LogWarning("Usuário {Id} não encontrado.", command.Id);
+            return null;
         }
 
-        user.AlterarRole(command.Role);
+        if (!Enum.TryParse<UserRole>(command.RoleName, true, out var novaRole))
+        {
+            _logger.LogError("Tentativa de atribuir role inválida: {RoleName}", command.RoleName);
+            throw new Exception("Role inválida.");
+        }
 
+        if (user.Role == UserRole.Admin && novaRole == UserRole.User)
+        {
+            _logger.LogWarning("Bloqueada tentativa de rebaixar Admin {Id} para User.", user.Id);
+            throw new Exception("Não é permitido rebaixar um administrador para usuário comum através deste endpoint.");
+        }
+
+        user.AlterarRole(novaRole);
         _repository.Update(user);
         await _repository.SaveChangesAsync();
 
-        _logger.LogInformation("Role do usuário {Id} atualizada com sucesso para {Role}.", user.Id, user.Role);
-
         return new UpdateUserRoleResponse(
             user.Id,
-            user.Role,
+            user.Role.ToString(),
             "Role atualizada com sucesso!"
         );
     }

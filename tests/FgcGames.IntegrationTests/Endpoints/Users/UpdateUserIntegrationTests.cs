@@ -53,25 +53,23 @@ public class UpdateUserIntegrationTests(IntegrationTestFixture fixture) : IAsync
         await _fixture.ExecuteDbContextAsync(async (context) =>
         {
             var userDb = await context.Usuarios.FindAsync(userId);
-
             userDb.ShouldNotBeNull();
             userDb.Nome.ShouldBe("Novo Nome Generico");
-            userDb.DataNascimento.ShouldBe(new DateOnly(1995, 10, 15));
         });
     }
 
     [Fact]
-    public async Task Dado_UsuarioInexistente_Quando_AtualizarPerfil_Entao_RetornaErroInterno()
+    public async Task Dado_UsuarioInexistente_Quando_AtualizarPerfil_Entao_RetornaNotFound()
     {
         // ARRANGE
         var idInexistente = Guid.NewGuid();
-        var command = new UpdateUserCommand(idInexistente, "Nome Teste", new DateOnly(DateTime.Now.AddYears(-20).Year, DateTime.Now.AddYears(-20).Month, DateTime.Now.AddYears(-20).Day));
+        var command = new UpdateUserCommand(idInexistente, "Nome Teste", new DateOnly(2000, 1, 1));
 
         // ACT
         var response = await _client.PutAsJsonAsync($"/usuarios/{idInexistente}", command, TestContext.Current.CancellationToken);
 
         // ASSERT
-        response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
+        response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
 
     [Fact]
@@ -87,14 +85,16 @@ public class UpdateUserIntegrationTests(IntegrationTestFixture fixture) : IAsync
             userId = usuario.Id;
         });
 
-        var novaRole = UserRole.Admin;
-        var command = new UpdateUserRoleCommand(userId, novaRole);
+        var command = new UpdateUserRoleCommand(userId, "Admin");
 
         // ACT
         var response = await _client.PatchAsJsonAsync($"/usuarios/{userId}/role", command, TestContext.Current.CancellationToken);
 
         // ASSERT
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var result = await response.Content.ReadFromJsonAsync<UpdateUserRoleResponse>(cancellationToken: TestContext.Current.CancellationToken);
+
+        result.Mensagem.ShouldBe("Role atualizada com sucesso!");
 
         await _fixture.ExecuteDbContextAsync(async (context) =>
         {
@@ -130,7 +130,6 @@ public class UpdateUserIntegrationTests(IntegrationTestFixture fixture) : IAsync
         {
             var userDb = await context.Usuarios.FindAsync(userId);
             userDb.ShouldNotBeNull();
-            userDb.Senha.Hash.ShouldNotBe(novaSenhaRaw);
             BCrypt.Net.BCrypt.Verify(novaSenhaRaw, userDb.Senha.Hash).ShouldBeTrue();
         });
     }

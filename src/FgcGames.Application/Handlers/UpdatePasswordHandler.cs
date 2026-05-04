@@ -3,23 +3,42 @@ using FgcGames.Application.Interfaces;
 using FgcGames.Application.Responses;
 using FgcGames.Domain.Interfaces.Repositories;
 using FgcGames.Domain.ValueObjects;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace FgcGames.Application.Handlers;
 
-public class UpdatePasswordHandler(ILogger<UpdatePasswordHandler> logger, IUsuarioRepository repository) : IUpdatePasswordHandler
+public class UpdatePasswordHandler(ILogger<UpdatePasswordHandler> logger, IUsuarioRepository repository, IHttpContextAccessor httpContextAccessor) : IUpdatePasswordHandler
 {
     private readonly ILogger<UpdatePasswordHandler> _logger = logger;
     private readonly IUsuarioRepository _repository = repository;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
-    public async Task<UpdatePasswordResponse> Handle(UpdatePasswordCommand command)
+    public async Task<UpdatePasswordResponse?> Handle(UpdatePasswordCommand command)
     {
+        var userEmailFromToken = _httpContextAccessor.HttpContext?.User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value
+                                 ?? _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userEmailFromToken))
+        {
+            _logger.LogWarning("Tentativa de alteração de senha sem e-mail no token.");
+            throw new UnauthorizedAccessException("Usuário não autenticado.");
+        }
+
         var user = await _repository.GetByIdAsync(command.Id);
 
         if (user == null)
         {
-            _logger.LogWarning("Tentativa de atualização de senha falhou: Usuário com ID {Id} não encontrado.", command.Id);
-            throw new Exception($"Usuário com ID {command.Id} não encontrado.");
+            _logger.LogWarning("Usuário com ID {Id} não encontrado.", command.Id);
+            return null;
+        }
+
+        if (!string.Equals(user.Email.ToString(), userEmailFromToken, StringComparison.OrdinalIgnoreCase))
+        {
+            _logger.LogError("VIOLAÇÃO: {AuthEmail} tentou alterar senha de {TargetEmail}.", userEmailFromToken, user.Email);
+            throw new HttpRequestException("Você só pode alterar a sua própria senha.", null, System.Net.HttpStatusCode.Forbidden);
         }
 
         try

@@ -6,18 +6,19 @@ using FgcGames.Domain.Interfaces.Repositories;
 using FgcGames.Domain.ValueObjects;
 using NSubstitute;
 using Shouldly;
+using Microsoft.Extensions.Logging;
 
 namespace FgcGames.UnitTests.Application.Handlers;
 
 public class UpdateUserRoleHandlerTests
 {
-    private readonly Microsoft.Extensions.Logging.ILogger<UpdateUserRoleHandler> _logger;
+    private readonly ILogger<UpdateUserRoleHandler> _logger;
     private readonly IUsuarioRepository _repository;
     private readonly UpdateUserRoleHandler _sut;
 
     public UpdateUserRoleHandlerTests()
     {
-        _logger = Substitute.For<Microsoft.Extensions.Logging.ILogger<UpdateUserRoleHandler>>();
+        _logger = Substitute.For<ILogger<UpdateUserRoleHandler>>();
         _repository = Substitute.For<IUsuarioRepository>();
         _sut = new UpdateUserRoleHandler(_logger, _repository);
     }
@@ -25,15 +26,19 @@ public class UpdateUserRoleHandlerTests
     [Fact]
     public async Task Dado_UsuarioExistente_Quando_AtualizarRole_Entao_DeveAtualizarComSucesso()
     {
+        // ARRANGE
         var usuario = CriarUsuario();
-        var command = new UpdateUserRoleCommand(usuario.Id, UserRole.Admin);
+        var command = new UpdateUserRoleCommand(usuario.Id, "Admin");
 
         _repository.GetByIdAsync(command.Id).Returns(usuario);
 
+        // ACT
         var result = await _sut.Handle(command);
 
+        // ASSERT
+        result.ShouldNotBeNull();
         result.Id.ShouldBe(usuario.Id);
-        result.Role.ShouldBe(UserRole.Admin);
+        result.Role.ShouldBe("Admin");
         result.Mensagem.ShouldBe("Role atualizada com sucesso!");
 
         usuario.Role.ShouldBe(UserRole.Admin);
@@ -44,15 +49,18 @@ public class UpdateUserRoleHandlerTests
     }
 
     [Fact]
-    public async Task Dado_UsuarioInexistente_Quando_AtualizarRole_Entao_DeveLancarException()
+    public async Task Dado_UsuarioInexistente_Quando_AtualizarRole_Entao_DeveRetornarNulo()
     {
-        var command = new UpdateUserRoleCommand(Guid.NewGuid(), UserRole.Admin);
+        // ARRANGE
+        var command = new UpdateUserRoleCommand(Guid.NewGuid(), "Admin");
 
         _repository.GetByIdAsync(command.Id).Returns((Usuario?)null);
 
-        var exception = await Should.ThrowAsync<Exception>(() => _sut.Handle(command));
+        // ACT
+        var result = await _sut.Handle(command);
 
-        exception.Message.ShouldBe($"Usuário com ID {command.Id} não encontrado.");
+        // ASSERT
+        result.ShouldBeNull();
 
         await _repository.Received(1).GetByIdAsync(command.Id);
         _repository.DidNotReceiveWithAnyArgs().Update(default!);

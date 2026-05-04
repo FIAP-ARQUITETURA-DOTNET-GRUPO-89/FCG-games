@@ -17,93 +17,64 @@ public static class UsuarioEndpoints
             .AllowAnonymous()
             .AddEndpointFilter<ValidationFilter<CreateUserCommand>>()
             .WithSummary("Cria um novo usuário")
-            .WithDescription("Endpoint responsável por criar um novo usuário.")
+            .WithDescription("Endpoint responsável por criar um novo usuário com perfil padrão 'User'.")
             .Produces<CreateUserResponse>(StatusCodes.Status201Created)
             .ProducesValidationProblem(StatusCodes.Status400BadRequest)
-            .Produces(StatusCodes.Status409Conflict)
-            .Produces(StatusCodes.Status500InternalServerError);
+            .Produces(StatusCodes.Status409Conflict);
 
         group.MapPost("/admin", CreateAdminUser)
             .RequireAuthorization("Admin")
             .AddEndpointFilter<ValidationFilter<CreateUserCommand>>()
             .WithSummary("Cria um novo usuário administrador")
-            .WithDescription("Endpoint responsável por criar um novo usuário com perfil Admin.")
             .Produces<CreateUserResponse>(StatusCodes.Status201Created)
-            .ProducesValidationProblem(StatusCodes.Status400BadRequest)
-            .Produces(StatusCodes.Status409Conflict)
-            .Produces(StatusCodes.Status500InternalServerError);
+            .ProducesValidationProblem(StatusCodes.Status400BadRequest);
 
         group.MapGet("/{id:Guid}", GetUserById)
-            .RequireAuthorization()
+            .RequireAuthorization("Admin")
             .WithSummary("Obtém um usuário pelo ID")
             .Produces<GetUserByIdResponse>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound);
 
         group.MapGet("/", GetAllUsers)
-            .RequireAuthorization()
+            .RequireAuthorization("Admin")
             .AddEndpointFilter<ValidationFilter<GetAllUsersQuery>>()
             .WithSummary("Lista todos os usuários")
-            .WithDescription("Retorna uma lista paginada de usuários, podendo filtrar por ativos ou inativos.")
             .Produces<PagedResponse<GetAllUsersResponse>>(StatusCodes.Status200OK)
-            .ProducesValidationProblem(StatusCodes.Status400BadRequest)
-            .Produces(StatusCodes.Status500InternalServerError);
+            .ProducesValidationProblem(StatusCodes.Status400BadRequest);
 
         group.MapGet("/busca", GetUsersByName)
             .RequireAuthorization()
             .AddEndpointFilter<ValidationFilter<GetUsersByNameQuery>>()
             .WithSummary("Busca usuários por nome")
-            .WithDescription("Endpoint responsável por retornar usuários pelo nome.")
-            .Produces<GetUsersByNameResponse>(StatusCodes.Status200OK)
-            .ProducesValidationProblem(StatusCodes.Status400BadRequest)
-            .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status500InternalServerError);
+            .Produces<GetUsersByNameResponse>(StatusCodes.Status200OK);
 
         group.MapPut("/{id:Guid}", UpdateUser)
             .RequireAuthorization()
             .AddEndpointFilter<ValidationFilter<UpdateUserCommand>>()
             .WithSummary("Atualiza um usuário")
-            .WithDescription("Endpoint responsável por atualizar um usuário existente.")
             .Produces<UpdateUserResponse>(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status204NoContent)
-            .ProducesValidationProblem(StatusCodes.Status400BadRequest)
-            .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status409Conflict)
-            .Produces(StatusCodes.Status500InternalServerError);
+            .Produces(StatusCodes.Status404NotFound);
 
         group.MapPatch("/{id:Guid}/role", UpdateUserRole)
             .RequireAuthorization("Admin")
             .AddEndpointFilter<ValidationFilter<UpdateUserRoleCommand>>()
             .WithSummary("Atualiza a role de um usuário")
-            .WithDescription("Endpoint responsável por atualizar a role de um usuário existente.")
             .Produces<UpdateUserResponse>(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status204NoContent)
-            .ProducesValidationProblem(StatusCodes.Status400BadRequest)
-            .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status409Conflict)
-            .Produces(StatusCodes.Status500InternalServerError);
+            .Produces(StatusCodes.Status404NotFound);
 
         group.MapPatch("/{id:Guid}/password", UpdatePassword)
             .RequireAuthorization()
             .AddEndpointFilter<ValidationFilter<UpdatePasswordCommand>>()
             .WithSummary("Atualiza a senha de um usuário")
-            .WithDescription("Endpoint responsável por atualizar a senha de um usuário existente.")
-            .Produces(StatusCodes.Status204NoContent)
             .Produces<UpdatePasswordResponse>(StatusCodes.Status200OK)
-            .ProducesValidationProblem(StatusCodes.Status400BadRequest)
-            .Produces(StatusCodes.Status404NotFound)
-            .Produces(StatusCodes.Status409Conflict)
-            .Produces(StatusCodes.Status500InternalServerError);
+            .Produces(StatusCodes.Status404NotFound);
 
         group.MapDelete("/{id:Guid}", DeleteUser)
             .RequireAuthorization("Admin")
             .AddEndpointFilter<ValidationFilter<DeleteUserCommand>>()
             .WithSummary("Remove um usuário")
-            .WithDescription("Endpoint responsável por deletar um usuário existente.")
-            .Produces(StatusCodes.Status204NoContent)
-            .ProducesValidationProblem(StatusCodes.Status400BadRequest)
-            .Produces(StatusCodes.Status404NotFound)
             .Produces<DeleteUserResponse>(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status500InternalServerError);
+            .Produces(StatusCodes.Status404NotFound);
     }
 
     private static async Task<IResult> CreateUser(CreateUserCommand command, [FromServices] ICreateUserHandler handler)
@@ -121,7 +92,7 @@ public static class UsuarioEndpoints
     private static async Task<IResult> GetUserById(Guid id, [FromServices] IGetUserByIdHandler handler)
     {
         var result = await handler.Handle(new GetUserByIdQuery(id));
-        return result is not null ? Results.Ok(result) : Results.NotFound();
+        return result is not null ? Results.Ok(result) : CreateNotFoundProblem(id);
     }
 
     private static async Task<IResult> GetAllUsers([AsParameters] GetAllUsersQuery query, [FromServices] IGetAllUsersHandler handler)
@@ -138,25 +109,35 @@ public static class UsuarioEndpoints
 
     private static async Task<IResult> UpdateUser(Guid id, UpdateUserCommand command, [FromServices] IUpdateUserHandler handler)
     {
-        var result = await handler.Handle(command);
-        return Results.Ok(result);
+        var result = await handler.Handle(command with { Id = id });
+        return result is not null ? Results.Ok(result) : CreateNotFoundProblem(id);
     }
 
     private static async Task<IResult> UpdateUserRole(Guid id, UpdateUserRoleCommand command, [FromServices] IUpdateUserRoleHandler handler)
     {
-        var result = await handler.Handle(command);
-        return Results.Ok(result);
+        var result = await handler.Handle(command with { Id = id });
+        return result is not null ? Results.Ok(result) : CreateNotFoundProblem(id);
     }
 
     private static async Task<IResult> UpdatePassword(Guid id, UpdatePasswordCommand command, [FromServices] IUpdatePasswordHandler handler)
     {
         var result = await handler.Handle(command with { Id = id });
-        return Results.Ok(result);
+        return result is not null ? Results.Ok(result) : CreateNotFoundProblem(id);
     }
 
     private static async Task<IResult> DeleteUser([AsParameters] DeleteUserCommand command, [FromServices] IDeleteUserHandler handler)
     {
         var result = await handler.Handle(command);
-        return Results.Ok(result);
+        return result is not null ? Results.Ok(result) : CreateNotFoundProblem(command.Id);
+    }
+
+    private static IResult CreateNotFoundProblem(Guid id)
+    {
+        return Results.Problem(
+            detail: $"O usuário com o ID {id} não foi encontrado no sistema.",
+            statusCode: StatusCodes.Status404NotFound,
+            title: "Recurso não encontrado",
+            type: "https://tools.ietf.org/html/rfc7231#section-6.5.4"
+        );
     }
 }

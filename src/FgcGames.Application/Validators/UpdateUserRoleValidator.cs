@@ -11,8 +11,10 @@ public class UpdateUserRoleValidator : AbstractValidator<UpdateUserRoleCommand>
             .NotEmpty()
             .WithMessage("O Id do usuário é obrigatório.");
 
-        RuleFor(x => x.Role)
-            .IsInEnum()
-            .WithMessage("Role inválida.");
+        RuleFor(x => x.RoleName)
+            .NotEmpty()
+            .Must(role => role.Equals("Admin", StringComparison.OrdinalIgnoreCase) ||
+                         role.Equals("User", StringComparison.OrdinalIgnoreCase))
+            .WithMessage("Role inválida. Use 'Admin' ou 'User'.");
     }
 }
