@@ -1,5 +1,3 @@
-﻿using FgcGames.Domain.Enum;
+﻿namespace FgcGames.Application.Responses;
 
-namespace FgcGames.Application.Responses;
-
-public record UpdateUserRoleResponse(Guid Id, UserRole Role, string Mensagem);
+public record UpdateUserRoleResponse(Guid Id, string Role, string Mensagem);

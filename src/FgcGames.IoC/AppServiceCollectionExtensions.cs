@@ -53,5 +53,6 @@ public static class AppServiceCollectionExtensions
         // Services
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<ISenhaHasherService, SenhaHasherService>();
+
     }
 }

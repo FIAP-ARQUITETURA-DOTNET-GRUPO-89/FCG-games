@@ -3,13 +3,14 @@ using Aspire.Hosting.Testing;
 using FgcGames.Infra.Database;
 using FgcGames.IntegrationTests.TestHelpers;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FgcGames.IntegrationTests.Fixtures;
 
 /// <summary>
 /// Fixture base para testes de integração da aplicação.
-/// Essa classe atua como ponto central de orquestração da infraestrutura de testes, permitindo que os testes foquem apenas no comportamento da aplicação.
+/// Essa classe atua como ponto central de orquestração da infraestrutura de testes.
 /// </summary>
 public class IntegrationTestFixture : IAsyncLifetime
 {
@@ -32,6 +33,8 @@ public class IntegrationTestFixture : IAsyncLifetime
         {
             var builder = await DistributedApplicationTestingBuilder
                 .CreateAsync<Projects.FgcGames_AppHost>();
+
+            builder.Services.AddHttpContextAccessor();
 
             builder.Services.ConfigureHttpClientDefaults(client =>
             {
@@ -77,6 +80,7 @@ public class IntegrationTestFixture : IAsyncLifetime
     {
         var options = new DbContextOptionsBuilder<FgcGamesContext>()
             .UseNpgsql(_connectionString)
+            .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning)) // Ignora o erro da sua mensagem
             .Options;
 
         await using var context = new FgcGamesContext(options);

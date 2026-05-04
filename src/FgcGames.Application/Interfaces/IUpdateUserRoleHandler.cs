@@ -5,5 +5,5 @@ namespace FgcGames.Application.Interfaces;
 
 public interface IUpdateUserRoleHandler
 {
-    Task<UpdateUserRoleResponse> Handle(UpdateUserRoleCommand command);
+    Task<UpdateUserRoleResponse?> Handle(UpdateUserRoleCommand command);
 }
