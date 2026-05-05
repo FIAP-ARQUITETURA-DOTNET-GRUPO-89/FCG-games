@@ -1,11 +1,12 @@
-using System.Net;
+﻿using System.Net;
 using System.Net.Http.Json;
 using FgcGames.Application.Commands;
 using FgcGames.Application.Responses;
-using FgcGames.IntegrationTests.Fixtures;
 using FgcGames.Domain.Entities;
-using FgcGames.Domain.ValueObjects;
 using FgcGames.Domain.Enum;
+using FgcGames.Domain.ValueObjects;
+using FgcGames.IntegrationTests.Fixtures;
+using FgcGames.IntegrationTests.TestHelpers;
 using Microsoft.EntityFrameworkCore;
 using Shouldly;
 
@@ -20,7 +21,7 @@ public class CreateUserIntegrationTests(IntegrationTestFixture fixture) : IAsync
     public async ValueTask InitializeAsync()
     {
         await _fixture.ResetDatabaseAsync();
-        _client = _fixture.HttpClient;
+        _client = TestAuthHelper.CreateAnonymousClient(_fixture);
     }
 
     public ValueTask DisposeAsync() => ValueTask.CompletedTask;
