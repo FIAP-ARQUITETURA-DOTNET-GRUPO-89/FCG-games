@@ -16,7 +16,8 @@ public class CreateUserHandler(ILogger<CreateUserHandler> logger, IUsuarioReposi
 
     public async Task<CreateUserResponse> Handle(CreateUserCommand command)
     {
-        var email = new Email(command.Email);
+        var email = Email.Create(command.Email);
+
         var senhaHash = BCrypt.Net.BCrypt.HashPassword(command.Senha);
         var senha = Senha.FromHash(senhaHash);
 
@@ -33,7 +34,7 @@ public class CreateUserHandler(ILogger<CreateUserHandler> logger, IUsuarioReposi
             command.DataNascimento,
             email,
             senha,
-            0
+            command.Role
         );
 
         _repository.Add(user);

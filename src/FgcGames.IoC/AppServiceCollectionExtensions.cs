@@ -28,22 +28,31 @@ public static class AppServiceCollectionExtensions
                 npgsql => npgsql.EnableRetryOnFailure(maxRetryCount: 5, maxRetryDelay: TimeSpan.FromSeconds(10), errorCodesToAdd: null)));
 
         // Handlers
-        services.AddScoped<ICreateUserHandler, CreateUserHandler>();
-        services.AddScoped<IDeleteUserHandler, DeleteUserHandler>();
-        services.AddScoped<IGetAllUsersHandler, GetAllUsersHandler>();
         services.AddScoped<IGetUserByIdHandler, GetUserByIdHandler>();
+        services.AddScoped<IGetAllUsersHandler, GetAllUsersHandler>();
         services.AddScoped<IGetUsersByNameHandler, GetUsersByNameHandler>();
-        services.AddScoped<IUpdatePasswordHandler, UpdatePasswordHandler>();
+        services.AddScoped<ICreateUserHandler, CreateUserHandler>();
         services.AddScoped<IUpdateUserHandler, UpdateUserHandler>();
         services.AddScoped<IUpdateUserRoleHandler, UpdateUserRoleHandler>();
+        services.AddScoped<IUpdatePasswordHandler, UpdatePasswordHandler>();
+        services.AddScoped<IDeleteUserHandler, DeleteUserHandler>();
+        services.AddScoped<ICreateGameHandler, CreateGameHandler>();
+        services.AddScoped<IGetAllGamesHandler, GetAllGamesHandler>();
+        services.AddScoped<IGetGameByIdHandler, GetGameByIdHandler>();
+        services.AddScoped<IUpdateGameHandler, UpdateGameHandler>();
+        services.AddScoped<IUpdatePriceHandler, UpdatePriceHandler>();
+        services.AddScoped<IDeleteGameHandler, DeleteGameHandler>();
 
         services.AddScoped<ILoginHandler, LoginHandler>();
 
         // Repositories
         services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+        services.AddScoped<IGameRepository, JogoRepository>();
+        services.AddScoped<IJogoRepository, JogoRepository>();
 
         // Services
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<ISenhaHasherService, SenhaHasherService>();
+
     }
 }

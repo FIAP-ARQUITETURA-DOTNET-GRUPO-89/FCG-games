@@ -9,7 +9,6 @@ namespace FgcGames.UnitTests.Infra.Repositories;
 
 public class UsuarioRepositoryTests
 {
-    [Fact]
     public async Task Dado_EmailExistente_Quando_ObterPorEmail_Entao_DeveRetornarUsuario()
     {
         // Arrange
@@ -86,4 +85,95 @@ public class UsuarioRepositoryTests
         usuario.Email.Endereco.ShouldBe(admin.Email.Endereco);
         usuario.Role.ShouldBe(admin.Role);
     }
+
+    [Fact]
+    public async Task Dado_UsuarioValido_Quando_Adicionar_Entao_DevePersistir()
+    {
+        // Arrange
+        using var context = InMemoryDbContextFactory.CreateContext();
+        var repository = new UsuarioRepository(context);
+        var usuario = CriarUsuario("Jonatas", "jonatas@email.com");
+
+        // Act
+        repository.Add(usuario);
+        await repository.SaveChangesAsync();
+
+        // Assert
+        var result = await repository.GetByIdAsync(usuario.Id);
+        result.ShouldNotBeNull();
+        result!.Nome.ShouldBe("Jonatas");
+        result.Email.Endereco.ShouldBe("jonatas@email.com");
+    }
+
+    [Fact]
+    public async Task Dado_UsuarioExistente_Quando_Atualizar_Entao_DevePersistirAlteracoes()
+    {
+        // Arrange
+        using var context = InMemoryDbContextFactory.CreateContext();
+        var repository = new UsuarioRepository(context);
+        var usuario = CriarUsuario("Nome Antigo", "user@email.com");
+
+        repository.Add(usuario);
+        await repository.SaveChangesAsync();
+
+        // Act
+        usuario.AtualizarPerfil("Nome Novo", new DateOnly(1995, 5, 20));
+        repository.Update(usuario);
+        await repository.SaveChangesAsync();
+
+        // Assert
+        var result = await repository.GetByIdAsync(usuario.Id);
+        result.ShouldNotBeNull();
+        result!.Nome.ShouldBe("Nome Novo");
+        result.DataNascimento.ShouldBe(new DateOnly(1995, 5, 20));
+    }
+
+    [Fact]
+    public async Task Dado_UsuarioExistente_Quando_Deletar_Entao_DeveRemover()
+    {
+        // Arrange
+        using var context = InMemoryDbContextFactory.CreateContext();
+        var repository = new UsuarioRepository(context);
+        var usuario = CriarUsuario("Jonatas", "jonatas@email.com");
+
+        repository.Add(usuario);
+        await repository.SaveChangesAsync();
+
+        // Act
+        repository.Delete(usuario);
+        await repository.SaveChangesAsync();
+
+        // Assert
+        var result = await repository.GetByIdAsync(usuario.Id);
+        result.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task Dado_MultiplosUsuarios_Quando_BuscarPaginado_Entao_DeveRetornarPaginaCorreta()
+    {
+        // Arrange
+        using var context = InMemoryDbContextFactory.CreateContext();
+        var repository = new UsuarioRepository(context);
+
+        repository.Add(CriarUsuario("Ana", "ana@email.com"));
+        repository.Add(CriarUsuario("Bruno", "bruno@email.com"));
+        repository.Add(CriarUsuario("Carlos", "carlos@email.com"));
+        await repository.SaveChangesAsync();
+
+        // Act
+        var result = await repository.GetPagedAsync(2, 2);
+
+        // Assert
+        result.Count.ShouldBe(1);
+        result.First().Nome.ShouldBe("Carlos");
+    }
+
+    private static Usuario CriarUsuario(string nome, string email)
+        => new(
+            nome,
+            new DateOnly(1990, 1, 1),
+            Email.Create(email),
+            Senha.FromHash("$2a$11$hashFakeParaTestes000000000000"),
+            UserRole.User
+        );
 }

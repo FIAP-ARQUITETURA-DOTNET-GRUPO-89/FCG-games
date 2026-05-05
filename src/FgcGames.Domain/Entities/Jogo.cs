@@ -38,4 +38,12 @@ public class Jogo : Entity, IAggregateRoot
     }
 
     public void Inativar() => Inativo = true;
+
+    public void Atualizar(string nome, string descricao, DateTime dataLancamento, ClassificacaoEtaria classificacaoEtaria)
+    {
+        Nome = nome;
+        Descricao = descricao;
+        DataLancamento = dataLancamento;
+        ClassificacaoEtaria = classificacaoEtaria;
+    }
 }

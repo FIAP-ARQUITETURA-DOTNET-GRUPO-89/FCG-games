@@ -1,5 +1,3 @@
-﻿using FgcGames.Domain.Enum;
+﻿namespace FgcGames.Application.Commands;
 
-namespace FgcGames.Application.Commands;
-
-public record UpdateUserRoleCommand(Guid Id, UserRole Role);
+public record UpdateUserRoleCommand(Guid Id, string RoleName);

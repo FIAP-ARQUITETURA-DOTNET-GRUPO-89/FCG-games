@@ -12,7 +12,9 @@ public static class AppConfigureExtensions
     public static async Task Configure(this WebApplication app)
     {
         app.UseMiddleware<ExceptionMiddleware>();
-        app.UseHttpsRedirection();
+
+        if (!app.Environment.IsEnvironment("Testing"))
+            app.UseHttpsRedirection();
 
 
         if (app.Environment.IsDevelopment())
