@@ -43,7 +43,7 @@ public class IntegrationTestFixture : IAsyncLifetime
         App = await builder.BuildAsync();
         await App.StartAsync();
 
-        _connectionString = await App.GetConnectionStringAsync("Default") ?? string.Empty;
+        _connectionString = await App.GetConnectionStringAsync("Default") ?? throw new InvalidOperationException("Connection string não encontrada");
         _dbManager = new TestDatabaseManager(_connectionString);
         await _dbManager.InitializeAsync();
         await _dbManager.ResetAsync();
@@ -71,7 +71,7 @@ public class IntegrationTestFixture : IAsyncLifetime
     /// Cria um HttpClient configurado para comunicação com a API.
     /// </summary>
     public HttpClient CreateClient()
-        => App.CreateHttpClient("fgcgames-api");
+        => App.CreateHttpClient("fgcgames-api", endpointName: "https");
 
     /// <summary>
     /// Executa uma ação com um <see cref="FgcGamesContext"/> apontando para o banco de testes
