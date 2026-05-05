@@ -45,6 +45,12 @@ public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddlewa
 
             await WriteProblemDetails(context, StatusCodes.Status401Unauthorized, ex.Message);
         }
+        catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
+        {
+            _logger.LogWarning(ex, "Acesso proibido em {Method} {Path} | Motivo: {Message}", context.Request.Method, context.Request.Path, ex.Message);
+
+            await WriteProblemDetails(context, StatusCodes.Status403Forbidden, ex.Message);
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro inesperado na requisição {Method} {Path}", context.Request.Method, context.Request.Path);
