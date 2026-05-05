@@ -36,9 +36,9 @@ public class UpdatePasswordHandler(ILogger<UpdatePasswordHandler> logger, IUsuar
             throw new NotFoundException("Usuário não encontrado.");
         }
 
-        if (!string.Equals(user.Email.ToString(), userEmailFromToken, StringComparison.OrdinalIgnoreCase))
+        if (!string.Equals(user.Email.Endereco, userEmailFromToken, StringComparison.OrdinalIgnoreCase))
         {
-            _logger.LogError("VIOLAÇÃO: {AuthEmail} tentou alterar senha de {TargetEmail}.", userEmailFromToken, user.Email);
+            _logger.LogError("VIOLAÇÃO: {AuthEmail} tentou alterar senha de {TargetEmail}.", userEmailFromToken, user.Email.Endereco);
             throw new HttpRequestException("Você só pode alterar a sua própria senha.", null, System.Net.HttpStatusCode.Forbidden);
         }
 

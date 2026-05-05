@@ -109,23 +109,44 @@ public class UpdateUserIntegrationTests(IntegrationTestFixture fixture) : IAsync
     public async Task Dado_SenhaValida_Quando_AtualizarSenha_Entao_GravaNovoHashNoBanco()
     {
         // ARRANGE
-        var userId = Guid.Empty;
+        var userEmail = "user@fgcgames.com";
+        Guid userId = Guid.Empty;
+
         await _fixture.ExecuteDbContextAsync(async (context) =>
         {
-            var usuario = new Usuario("User Senha", new DateOnly(1990, 1, 1), Email.Create("senha@teste.com"), Senha.FromHash("Senha01@"), UserRole.User);
+            var usuariosExistentes = context.Usuarios
+                .AsEnumerable()
+                .Where(u => u.Email.Endereco.Equals(userEmail, StringComparison.OrdinalIgnoreCase));
+
+            if (usuariosExistentes.Any())
+            {
+                context.Usuarios.RemoveRange(usuariosExistentes);
+                await context.SaveChangesAsync();
+            }
+
+            var usuario = new Usuario(
+                "User Senha",
+                new DateOnly(1990, 1, 1),
+                Email.Create(userEmail),
+                Senha.FromHash(BCrypt.Net.BCrypt.HashPassword("Abc!1234")),
+                UserRole.User
+            );
+
             context.Usuarios.Add(usuario);
             await context.SaveChangesAsync();
             userId = usuario.Id;
         });
 
+        var usuarioClient = await TestAuthHelper.CreateUserClientAsync(_fixture);
+
         var novaSenhaRaw = "NovaSenha@2";
         var command = new UpdatePasswordCommand(userId, novaSenhaRaw);
 
         // ACT
-        var response = await _client.PatchAsJsonAsync($"/usuarios/{userId}/password", command, TestContext.Current.CancellationToken);
+        var response = await usuarioClient.PatchAsJsonAsync($"/usuarios/{userId}/password", command, TestContext.Current.CancellationToken);
 
         // ASSERT
-        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
 
         await _fixture.ExecuteDbContextAsync(async (context) =>
         {
