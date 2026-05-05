@@ -2,6 +2,7 @@
 using FgcGames.Application.Interfaces;
 using FgcGames.Application.Responses;
 using FgcGames.Domain.Interfaces.Repositories;
+using FgcGames.Shared.Exceptions;
 using Microsoft.Extensions.Logging;
 
 namespace FgcGames.Application.Handlers;
@@ -18,7 +19,7 @@ public class UpdateUserHandler(ILogger<UpdateUserHandler> logger, IUsuarioReposi
         if (user == null)
         {
             _logger.LogWarning("Tentativa de atualização falhou: Usuário com ID {Id} não encontrado.", command.Id);
-            throw new Exception($"Usuário com ID {command.Id} não encontrado.");
+            throw new NotFoundException($"Usuário com ID {command.Id} não encontrado.");
         }
 
         try
@@ -28,7 +29,7 @@ public class UpdateUserHandler(ILogger<UpdateUserHandler> logger, IUsuarioReposi
             _repository.Update(user);
             await _repository.SaveChangesAsync();
 
-            _logger.LogInformation("Usuário {Id} atualizado com sucesso.", user.Id);
+            _logger.LogInformation("Usuário {Id} updated com sucesso.", user.Id);
 
             return new UpdateUserResponse(
                 user.Id,

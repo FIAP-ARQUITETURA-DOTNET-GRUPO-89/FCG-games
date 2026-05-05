@@ -35,7 +35,8 @@ public class UpdatePasswordHandlerTests
         var usuario = CriarUsuario();
         var command = new UpdatePasswordCommand(usuario.Id, "Senha@123");
         _repository.GetByIdAsync(command.Id).Returns(usuario);
-        SimularUsuarioAutenticado(usuario.Email.ToString());
+
+        SimularUsuarioAutenticado(usuario.Email.Endereco);
 
         // Act
         var result = await _sut.Handle(command);
@@ -90,13 +91,13 @@ public class UpdatePasswordHandlerTests
         var usuario = CriarUsuario();
         var command = new UpdatePasswordCommand(usuario.Id, "123");
         _repository.GetByIdAsync(command.Id).Returns(usuario);
-        SimularUsuarioAutenticado(usuario.Email.ToString());
 
-        // Act
-        var task = _sut.Handle(command);
+        SimularUsuarioAutenticado(usuario.Email.Endereco);
+
+        // Act 
+        await Should.ThrowAsync<ArgumentException>(async () => await _sut.Handle(command));
 
         // Assert
-        await Should.ThrowAsync<ArgumentException>(() => task);
         _repository.DidNotReceiveWithAnyArgs().Update(default!);
         await _repository.DidNotReceive().SaveChangesAsync();
     }
