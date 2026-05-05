@@ -15,7 +15,7 @@ public class Jogo : Entity, IAggregateRoot
 
     public Jogo(DateTime dataLancamento, string nome, string descricao, decimal preco, ClassificacaoEtaria classificacaoEtaria) 
     {
-        DataCriacao = DateTime.UtcNow;
+        DataCriacao = DateTime.Now;
         DataLancamento = dataLancamento;
         Nome = nome;
         Descricao = descricao;

@@ -2,10 +2,11 @@
 
 var builder = DistributedApplication.CreateBuilder(args);
 
-var postgres = builder.Environment.IsDevelopment()
+var isTesting = builder.Environment.IsEnvironment("Testing");
+
+var postgres = isTesting
     ? builder.AddPostgres("Postgres")
         .WithLifetime(ContainerLifetime.Session)
-        .WithPgAdmin(c => c.WithLifetime(ContainerLifetime.Session))
         .AddDatabase("Default", "fgcgames-db")
     : builder.AddPostgres("Postgres", port: 5432)
         .WithLifetime(ContainerLifetime.Persistent)

@@ -8,7 +8,7 @@ using Shouldly;
 namespace FgcGames.IntegrationTests.Endpoints;
 
 [Collection("IntegrationTests")]
-public class AuthIntegrationTests(IntegrationTestFixture fixture) : IAsyncLifetime //: IClassFixture<IntegrationTestFixture>, 
+public class AuthIntegrationTests(IntegrationTestFixture fixture) : IAsyncLifetime
 {
     private readonly IntegrationTestFixture _fixture = fixture;
 

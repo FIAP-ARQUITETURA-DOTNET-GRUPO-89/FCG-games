@@ -3,7 +3,6 @@ using Aspire.Hosting.Testing;
 using FgcGames.Infra.Database;
 using FgcGames.IntegrationTests.TestHelpers;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FgcGames.IntegrationTests.Fixtures;
@@ -18,9 +17,6 @@ public class IntegrationTestFixture : IAsyncLifetime
 
     private TestDatabaseManager _dbManager = default!;
     private string _connectionString = string.Empty;
-    private HttpClient? _httpClient;
-
-    public HttpClient HttpClient => _httpClient ??= CreateClient();
 
     /// <summary>
     /// Inicializa o ambiente de testes.
@@ -29,40 +25,35 @@ public class IntegrationTestFixture : IAsyncLifetime
     {
         Environment.SetEnvironmentVariable("DOTNET_ENVIRONMENT", "Testing");
 
-        try
+        var builder = await DistributedApplicationTestingBuilder
+            .CreateAsync<Projects.FgcGames_AppHost>();
+
+        builder.Services.AddHttpContextAccessor();
+
+        builder.Services.ConfigureHttpClientDefaults(client =>
         {
-            var builder = await DistributedApplicationTestingBuilder
-                .CreateAsync<Projects.FgcGames_AppHost>();
+            client.ConfigurePrimaryHttpMessageHandler(() =>
+                new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback =
+                        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                });
+        });
 
-            builder.Services.AddHttpContextAccessor();
+        App = await builder.BuildAsync();
+        await App.StartAsync();
 
-            builder.Services.ConfigureHttpClientDefaults(client =>
-            {
-                client.ConfigurePrimaryHttpMessageHandler(() =>
-                    new HttpClientHandler
-                    {
-                        ServerCertificateCustomValidationCallback =
-                            HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-                    });
-            });
-
-            App = await builder.BuildAsync();
-            await App.StartAsync();
-        }
-        catch (Exception ex) when (IsContainerRuntimeUnavailable(ex))
-        {
-            Assert.Skip("Docker/Container runtime não disponível. Testes de integração foram ignorados.");
-            return;
-        }
-
-        _connectionString = await App.GetConnectionStringAsync("Default") ?? string.Empty;
+        _connectionString = await App.GetConnectionStringAsync("Default") ?? throw new InvalidOperationException("Connection string não encontrada");
         _dbManager = new TestDatabaseManager(_connectionString);
         await _dbManager.InitializeAsync();
+        await _dbManager.ResetAsync();
     }
 
+    /// <summary>
+    /// Finaliza a execução da aplicação após os testes.
+    /// </summary>
     public async ValueTask DisposeAsync()
     {
-        _httpClient?.Dispose();
         if (App is not null)
         {
             await App.StopAsync();
@@ -70,26 +61,29 @@ public class IntegrationTestFixture : IAsyncLifetime
         }
     }
 
+    /// <summary>
+    /// Reseta o banco de dados para um estado limpo.
+    /// </summary>
     public async Task ResetDatabaseAsync()
         => await _dbManager.ResetAsync();
 
+    /// <summary>
+    /// Cria um HttpClient configurado para comunicação com a API.
+    /// </summary>
     public HttpClient CreateClient()
-        => App.CreateHttpClient("fgcgames-api");
+        => App.CreateHttpClient("fgcgames-api", endpointName: "https");
 
+    /// <summary>
+    /// Executa uma ação com um <see cref="FgcGamesContext"/> apontando para o banco de testes
+    /// </summary>
     public async Task ExecuteDbContextAsync(Func<FgcGamesContext, Task> action)
     {
         var options = new DbContextOptionsBuilder<FgcGamesContext>()
             .UseNpgsql(_connectionString)
-            .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning)) // Ignora o erro da sua mensagem
             .Options;
 
         await using var context = new FgcGamesContext(options);
         await action(context);
         await context.SaveChangesAsync();
     }
-
-    private static bool IsContainerRuntimeUnavailable(Exception exception)
-        => exception.ToString().Contains(
-            "Container runtime 'docker' could not be found",
-            StringComparison.OrdinalIgnoreCase);
 }
