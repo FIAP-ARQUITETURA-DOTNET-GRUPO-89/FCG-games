@@ -1,4 +1,3 @@
-﻿namespace FgcGames.Application.Commands
-{
-    public record DeleteGameCommand(Guid Id);
-}
+﻿namespace FgcGames.Application.Commands;
+
+public record DeleteGameCommand(Guid Id);

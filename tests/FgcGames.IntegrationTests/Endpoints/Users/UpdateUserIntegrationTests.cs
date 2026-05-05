@@ -1,4 +1,4 @@
-using System.Net;
+﻿using System.Net;
 using System.Net.Http.Json;
 using FgcGames.Application.Commands;
 using FgcGames.Application.Responses;
@@ -94,6 +94,7 @@ public class UpdateUserIntegrationTests(IntegrationTestFixture fixture) : IAsync
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         var result = await response.Content.ReadFromJsonAsync<UpdateUserRoleResponse>(cancellationToken: TestContext.Current.CancellationToken);
 
+        result.ShouldNotBeNull();
         result.Mensagem.ShouldBe("Role atualizada com sucesso!");
 
         await _fixture.ExecuteDbContextAsync(async (context) =>

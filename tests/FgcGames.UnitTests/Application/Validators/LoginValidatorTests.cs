@@ -28,7 +28,7 @@ public class LoginValidatorTests
     public void Dado_EmailNulo_Quando_Validar_Entao_DeveSerInvalido()
     {
         // Arrange
-        var command = new LoginCommand(null, "Senha12@");
+        var command = new LoginCommand(null!, "Senha12@");
 
         // Act
         var result = _validator.TestValidate(command);
@@ -99,7 +99,7 @@ public class LoginValidatorTests
     public void Dado_SenhaNula_Quando_Validar_Entao_DeveSerInvalida()
     {
         // Arrange
-        var command = new LoginCommand("teste@email.com", null);
+        var command = new LoginCommand("teste@email.com", null!);
 
         // Act
         var result = _validator.TestValidate(command);

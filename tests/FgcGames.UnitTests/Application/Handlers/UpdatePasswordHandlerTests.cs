@@ -1,14 +1,15 @@
-﻿using FgcGames.Application.Commands;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using FgcGames.Application.Commands;
 using FgcGames.Application.Handlers;
 using FgcGames.Domain.Entities;
 using FgcGames.Domain.Enum;
 using FgcGames.Domain.Interfaces.Repositories;
 using FgcGames.Domain.ValueObjects;
+using FgcGames.Shared.Exceptions;
 using Microsoft.AspNetCore.Http;
 using NSubstitute;
 using Shouldly;
-using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace FgcGames.UnitTests.Application.Handlers;
 
@@ -51,7 +52,7 @@ public class UpdatePasswordHandlerTests
     }
 
     [Fact]
-    public async Task Dado_UsuarioInexistente_Quando_AtualizarSenha_Entao_DeveRetornarNull()
+    public async Task Dado_UsuarioInexistente_Quando_AtualizarSenha_Entao_DeveLancarNotFoundException()
     {
         // Arrange
         var command = new UpdatePasswordCommand(Guid.NewGuid(), "Senha@123");
@@ -59,10 +60,9 @@ public class UpdatePasswordHandlerTests
         SimularUsuarioAutenticado("qualquer@email.com");
 
         // Act
-        var result = await _sut.Handle(command);
+        await Should.ThrowAsync<NotFoundException>(async () => await _sut.Handle(command));
 
         // Assert
-        result.ShouldBeNull();
         _repository.DidNotReceiveWithAnyArgs().Update(default!);
         await _repository.DidNotReceive().SaveChangesAsync();
     }

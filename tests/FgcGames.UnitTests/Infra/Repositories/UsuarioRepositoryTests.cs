@@ -9,6 +9,7 @@ namespace FgcGames.UnitTests.Infra.Repositories;
 
 public class UsuarioRepositoryTests
 {
+    [Fact]
     public async Task Dado_EmailExistente_Quando_ObterPorEmail_Entao_DeveRetornarUsuario()
     {
         // Arrange

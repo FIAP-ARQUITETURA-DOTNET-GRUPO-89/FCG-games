@@ -1,10 +1,9 @@
 ﻿using FgcGames.Application.Queries;
 using FgcGames.Application.Responses;
 
-namespace FgcGames.Application.Interfaces
+namespace FgcGames.Application.Interfaces;
+
+public interface IGetGameByIdHandler
 {
-    public interface IGetGameByIdHandler
-    {
-        Task<GameResponse> Handle(GetGameByIdQuery query);
-    }
+    Task<GameResponse> Handle(GetGameByIdQuery query);
 }

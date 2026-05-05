@@ -1,9 +1,8 @@
 ﻿using FgcGames.Application.Commands;
 
-namespace FgcGames.Application.Interfaces
+namespace FgcGames.Application.Interfaces;
+
+public interface IUpdatePriceHandler
 {
-    public interface IUpdatePriceHandler
-    {
-        Task Handle(UpdatePriceCommand command);
-    }
+    Task Handle(UpdatePriceCommand command);
 }

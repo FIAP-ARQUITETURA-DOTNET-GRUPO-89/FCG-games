@@ -18,14 +18,21 @@ public abstract class BaseRepository<T>(FgcGamesContext context) : IBaseReposito
     public async Task<int> CountAsync(Expression<Func<T, bool>>? predicate = null)
     {
         IQueryable<T> query = _context.Set<T>();
-        if (predicate != null) query = query.Where(predicate);
+        if (predicate != null)
+        {
+            query = query.Where(predicate);
+        }
+
         return await query.CountAsync();
     }
 
     public async Task<IReadOnlyList<T>> GetPagedAsync(int pagina, int tamanhoPagina, Expression<Func<T, bool>>? predicate = null)
     {
         IQueryable<T> query = _context.Set<T>();
-        if (predicate != null) query = query.Where(predicate);
+        if (predicate != null)
+        {
+            query = query.Where(predicate);
+        }
 
         return await query
             .Skip((pagina - 1) * tamanhoPagina)

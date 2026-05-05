@@ -7,7 +7,9 @@ public record Email(string Endereco)
     public static Email Create(string endereco)
     {
         if (string.IsNullOrWhiteSpace(endereco) || !endereco.Contains("@"))
+        {
             throw new ArgumentException("E-mail inválido.");
+        }
 
         return new Email(endereco.ToLower().Trim());
     }

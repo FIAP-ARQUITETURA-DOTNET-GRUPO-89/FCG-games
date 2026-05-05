@@ -14,8 +14,9 @@ public static class AppConfigureExtensions
         app.UseMiddleware<ExceptionMiddleware>();
 
         if (!app.Environment.IsEnvironment("Testing"))
+        {
             app.UseHttpsRedirection();
-
+        }
 
         if (app.Environment.IsDevelopment())
         {

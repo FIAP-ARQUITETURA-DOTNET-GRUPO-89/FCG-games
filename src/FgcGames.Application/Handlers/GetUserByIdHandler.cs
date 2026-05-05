@@ -14,7 +14,9 @@ public class GetUserByIdHandler(IUsuarioRepository repository) : IGetUserByIdHan
         var user = await _repository.GetByIdAsync(query.Id);
 
         if (user is null)
+        {
             return null;
+        }
 
         return new GetUserByIdResponse(
             user.Id,

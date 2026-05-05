@@ -35,10 +35,10 @@ public class EmailTests
     public void Dado_EmailNulo_Quando_Criar_Entao_DeveLancarExcecao()
     {
         // Arrange
-        string endereco = null;
+        string? endereco = null;
 
         // Act & Assert
-        Should.Throw<ArgumentException>(() => Email.Create(endereco))
+        Should.Throw<ArgumentException>(() => Email.Create(endereco!))
                 .Message.ShouldBe("E-mail inválido.");
     }
 
