@@ -16,7 +16,9 @@ public class Usuario : Entity, IAggregateRoot
 
     protected Usuario() 
     {
-
+        Nome = null!;
+        Email = null!;
+        Senha = null!;
     }
 
     public Usuario(string nome, DateOnly dataNascimento, Email email, Senha senha, UserRole userRole)
@@ -32,20 +34,20 @@ public class Usuario : Entity, IAggregateRoot
     public void AtualizarPerfil(string nome, DateOnly dataNascimento)
     {
         if (string.IsNullOrWhiteSpace(nome))
+        {
             throw new ArgumentException("O nome não pode estar vazio.");
+        }
 
         if (dataNascimento > DateOnly.FromDateTime(DateTime.Now))
+        {
             throw new ArgumentException("A data de nascimento não pode ser uma data futura.");
+        }
 
         Nome = nome;
         DataNascimento = dataNascimento;
     }
 
-    public void AlterarSenha(Senha novaSenha)
-    {
-        //implementar
-        Senha = novaSenha;
-    }
+    public void AlterarSenha(Senha novaSenha) => Senha = novaSenha;
 
     public void AlterarRole(UserRole novaRole)
     {
@@ -58,7 +60,14 @@ public class Usuario : Entity, IAggregateRoot
 
     public int CalcularIdade()
     {
-        //implementar
-        return 1;
+        var hoje = DateOnly.FromDateTime(DateTime.UtcNow);
+        var idade = hoje.Year - DataNascimento.Year;
+
+        if (hoje < DataNascimento.AddYears(idade))
+        {
+            idade--;
+        }
+
+        return idade;
     }
 }

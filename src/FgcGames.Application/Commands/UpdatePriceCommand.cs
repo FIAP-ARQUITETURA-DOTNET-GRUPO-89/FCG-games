@@ -1,4 +1,3 @@
-﻿namespace FgcGames.Application.Commands
-{
-    public record UpdatePriceCommand(Guid Id, decimal NovoPreco);
-}
+﻿namespace FgcGames.Application.Commands;
+
+public record UpdatePriceCommand(Guid Id, decimal NovoPreco);

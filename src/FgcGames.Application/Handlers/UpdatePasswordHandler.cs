@@ -1,12 +1,13 @@
-﻿using FgcGames.Application.Commands;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using FgcGames.Application.Commands;
 using FgcGames.Application.Interfaces;
 using FgcGames.Application.Responses;
 using FgcGames.Domain.Interfaces.Repositories;
 using FgcGames.Domain.ValueObjects;
+using FgcGames.Shared.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace FgcGames.Application.Handlers;
 
@@ -16,7 +17,7 @@ public class UpdatePasswordHandler(ILogger<UpdatePasswordHandler> logger, IUsuar
     private readonly IUsuarioRepository _repository = repository;
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
-    public async Task<UpdatePasswordResponse?> Handle(UpdatePasswordCommand command)
+    public async Task<UpdatePasswordResponse> Handle(UpdatePasswordCommand command)
     {
         var userEmailFromToken = _httpContextAccessor.HttpContext?.User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value
                                  ?? _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -32,7 +33,7 @@ public class UpdatePasswordHandler(ILogger<UpdatePasswordHandler> logger, IUsuar
         if (user == null)
         {
             _logger.LogWarning("Usuário com ID {Id} não encontrado.", command.Id);
-            return null;
+            throw new NotFoundException("Usuário não encontrado.");
         }
 
         if (!string.Equals(user.Email.Endereco, userEmailFromToken, StringComparison.OrdinalIgnoreCase))

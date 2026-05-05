@@ -23,10 +23,10 @@ public class SenhaTests
     public void Dado_HashNulo_Quando_Criar_Entao_DeveLancarExcecao()
     {
         // Arrange
-        string hash = null;
+        string? hash = null;
 
         // Act & Assert
-        Should.Throw<ArgumentException>(() => Senha.FromHash(hash))
+        Should.Throw<ArgumentException>(() => Senha.FromHash(hash!))
               .Message.ShouldBe("O hash da senha não pode ser vazio.");
     }
 

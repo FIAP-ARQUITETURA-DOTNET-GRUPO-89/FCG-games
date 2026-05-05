@@ -25,7 +25,7 @@ public class JogoIntegrationTests(IntegrationTestFixture fixture) : IAsyncLifeti
         ClassificacaoEtaria.Dezoito
     );
 
-    private async Task<GameResponse> CriarJogoAsync(HttpClient client, string nome = "The Witcher 3")
+    private static async Task<GameResponse> CriarJogoAsync(HttpClient client, string nome = "The Witcher 3")
     {
         var response = await client.PostAsJsonAsync("/jogos", NovoJogo(nome), TestContext.Current.CancellationToken);
         return (await response.ReadContentAsync<GameResponse>(TestContext.Current.CancellationToken))!;

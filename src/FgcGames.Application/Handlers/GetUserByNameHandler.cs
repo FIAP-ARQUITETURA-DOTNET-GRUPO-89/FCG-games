@@ -16,7 +16,7 @@ public class GetUsersByNameHandler(IUsuarioRepository repository) : IGetUsersByN
         if (string.IsNullOrWhiteSpace(query.Nome))
         {
             return new PagedResponse<GetUsersByNameResponse>(
-                Enumerable.Empty<GetUsersByNameResponse>(),
+                [],
                 query.Pagina, 0, 0
             );
         }
