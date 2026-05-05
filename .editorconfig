@@ -139,6 +139,21 @@ dotnet_diagnostic.IDE0007.severity = suggestion
 # NÃO forçar tipo explícito
 dotnet_diagnostic.IDE0008.severity = none
 
+# Força a utilização File-scoped namespaces.
+dotnet_diagnostic.IDE0161.severity = error
+
+# Campo não anulável deve ser inicializado (evita estado inválido)
+dotnet_diagnostic.CS8618.severity = error
+
+# Possível acesso a objeto nulo (evita NullReferenceException em runtime)
+dotnet_diagnostic.CS8602.severity = error
+
+# Possível retorno de valor nulo
+dotnet_diagnostic.CS8603.severity = error
+
+# Possível passagem de null como argumento
+dotnet_diagnostic.CS8604.severity = error
+
 ###############################################
 # FORMATAÇÃO
 ###############################################
